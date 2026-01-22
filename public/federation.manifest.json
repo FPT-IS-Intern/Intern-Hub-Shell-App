@@ -1,0 +1,5 @@
+{
+  "lms": "http://localhost:4201/remoteEntry.json",
+  "hrm": "http://localhost:4202/remoteEntry.json",
+  "bo-portal": "http://localhost:4203/remoteEntry.json"
+}
