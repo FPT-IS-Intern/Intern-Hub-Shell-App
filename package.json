@@ -1,5 +1,5 @@
 {
-  "name": "shell-app",
+  "name": "intern-hub-shell-app",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
