@@ -1,10 +1,10 @@
+
 const { withNativeFederation, shareAll } = require('@angular-architects/native-federation/config');
 
 module.exports = withNativeFederation({
   name: 'shell-app',
 
   exposes: {
-    './Button': './src/libs/shared/components/button/button.component.ts',
   },
 
   shared: {

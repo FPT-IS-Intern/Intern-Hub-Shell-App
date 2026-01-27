@@ -1,0 +1,22 @@
+<div class="table-row">
+  <!-- LEFT -->
+  <div class="table-row-left">
+    <span class="table-row-left-name">{{ name }}</span>
+    <span class="table-row-left-date">
+      <span class="table-row-left-date-title">Ngày tạo đơn:</span>
+      {{ date | date: 'dd/MM/yyyy' }}
+    </span>
+  </div>
+
+  <div class="table-row-right">
+    <ng-container *ngIf="rightTemplate; else defaultRight">
+      <ng-container
+        *ngTemplateOutlet="rightTemplate; context: rightContext">
+      </ng-container>
+    </ng-container>
+
+    <ng-template #defaultRight>
+      <span class="text-gray-400">—</span>
+    </ng-template>
+  </div>
+</div>

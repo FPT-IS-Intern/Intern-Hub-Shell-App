@@ -1,0 +1,27 @@
+.table-row{
+    display: flex;
+    background-color: var(--theme-neutral-light-100);
+    justify-content: space-between;
+    width: 454px;
+    height: 70px;
+    align-items: center;
+    padding: 16px 8px;
+}
+
+.table-row-left-date-title {
+    color: var(--theme-neutral-500);
+}
+
+.table-row-right p {
+    color: var(--secondary-800);
+    font-weight: 500;
+}
+
+.table-row-left{
+    display: flex;
+    flex-direction: column;
+}
+
+span, p {
+    font-size: var(--font-md);
+}

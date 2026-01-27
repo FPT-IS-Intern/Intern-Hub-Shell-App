@@ -1,32 +1,11 @@
 <div class="flex h-screen bg-gray-100">
-  <aside class="w-64 bg-slate-800 text-white flex flex-col">
-    <div class="p-6 text-2xl font-bold border-b border-slate-700">BO-PORTAL</div>
-    <nav class="flex-1 p-4 space-y-2">
-      <a
-        routerLink="/lms"
-        routerLinkActive="bg-slate-700"
-        class="block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-700"
-      >
-        📚 LMS Service
-      </a>
-      <a
-        routerLink="/hrm"
-        routerLinkActive="bg-slate-700"
-        class="block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-700"
-      >
-        👥 HRM Service
-      </a>
-    </nav>
-    <div class="p-4 border-t border-slate-700">
-      <p class="text-xs text-slate-400 italic">FPT IS - Banking Dept</p>
-    </div>
-  </aside>
+  <app-sidebar></app-sidebar>
 
   <div class="flex-1 flex flex-col overflow-hidden">
     <header class="h-16 bg-white shadow-sm flex items-center justify-between px-8">
       <div class="text-gray-600 font-medium">Hệ thống quản lý đào tạo</div>
       <div class="flex items-center gap-4">
-        <span class="text-sm text-gray-500">Xin chào, Intern</span>
+        <span class="text-xl bg-primary-accent text-red-800">Xin chào, Intern</span>
         <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white">
           I
         </div>

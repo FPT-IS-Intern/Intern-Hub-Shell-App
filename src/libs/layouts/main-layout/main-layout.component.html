@@ -1,0 +1,26 @@
+<ng-template #textRight let-content>
+  <p class="text-gray-700">{{ content }}</p>
+</ng-template>
+
+<ng-template #buttonRight let-onClick="onClick">
+  <button
+    class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800"
+    (click)="onClick()"
+  >
+    Xem chi tiết
+  </button>
+</ng-template>
+
+<div class="main-layout">
+  <app-header-component></app-header-component>
+
+  <div class="layout-body">
+    <div class="layout-body-sidebar">
+      <app-sidebar></app-sidebar>
+    </div>
+
+    <div class="layout-body-content">
+      <router-outlet />
+    </div>
+  </div>
+</div>
