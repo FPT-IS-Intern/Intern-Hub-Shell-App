@@ -22,6 +22,8 @@
   align-items: center;
 
   flex-shrink: 0;
+
+  color: var(--neutral-200);
 }
 
 .sidebar-item a {
@@ -30,7 +32,7 @@
   display: none;
   padding: 8px;
 
-  color: var(--primary-900);
+  color: var(--neutral-200);
   text-decoration: none;
 
   opacity: 0;

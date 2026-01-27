@@ -2,13 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, TemplateRef } from '@angular/core';
 
 @Component({
-  selector: 'table-row',
-  templateUrl: './manager-table-row.component.html',
-  styleUrls: ['./manager-table-row.component.scss'],
+  selector: 'app-approval-list-item',
+  templateUrl: './approval-list-item.component.html',
+  styleUrls: ['./approval-list-item.component.scss'],
   imports: [CommonModule],
   standalone: true
 })
-export class ManagerTableRowComponent {
+export class ApprovalListItemComponent {
   @Input() name!: string;
   @Input() date!: Date;
   @Input() rightTemplate?: TemplateRef<any>;

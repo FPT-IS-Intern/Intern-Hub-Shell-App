@@ -1,0 +1,21 @@
+<div class="approval-item">
+  <!-- LEFT -->
+  <div class="approval-item-left">
+    <span class="approval-item-left-name">{{ name }}</span>
+    <span class="approval-item-left-date">
+      <span class="approval-item-left-date-title">Ngày tạo đơn:</span>
+      {{ date | date: 'dd/MM/yyyy' }}
+    </span>
+  </div>
+
+  <div class="approval-item-right">
+    <ng-container *ngIf="rightTemplate; else defaultRight">
+      <ng-container *ngTemplateOutlet="rightTemplate; context: rightContext">
+      </ng-container>
+    </ng-container>
+
+    <ng-template #defaultRight>
+      <span class="text-gray-400">—</span>
+    </ng-template>
+  </div>
+</div>
