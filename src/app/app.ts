@@ -1,12 +1,12 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { DynamicDsService } from 'dynamic-ds';
-import {MainLayoutComponent} from '../libs/layouts/main-layout/main-layout.component';
+import { MainLayoutTestComponent } from '../libs/layouts/main-layout-test/main-layout-test.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    MainLayoutComponent,
+    MainLayoutTestComponent,
 ],
   templateUrl: './app.component.html'
 })

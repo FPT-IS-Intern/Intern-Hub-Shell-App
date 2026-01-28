@@ -1,0 +1,15 @@
+<div class="pop-up-confirm-overlay">
+    <div class="pop-up-confirm">
+        <div class="pop-up-confirm-content">
+            <img *ngIf="imgUrl" [src]="imgUrl" alt="">
+            <div class="pop-up-confirm-text">
+                <p class="pop-up-title">{{title}}</p>
+                <p class="pop-up-content">{{content}}</p>
+            </div>
+        </div>
+        <div class="pop-up-confirm-actions">
+            <app-button-container size="md" content="Quay Lại" backgroundColor="var(--neutral-100)" color="var(--neutral-800)" (buttonClick)="onCancel()"></app-button-container>
+            <app-button-container size="md" content="Đồng Ý" [backgroundColor]="colorButton" color="#fff" (buttonClick)="onConfirm()"></app-button-container>
+        </div>
+    </div>
+</div>

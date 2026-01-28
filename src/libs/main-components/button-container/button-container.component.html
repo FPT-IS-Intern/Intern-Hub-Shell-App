@@ -1,0 +1,20 @@
+<button class="button-container" [style.minWidth]="sizeStyle.minWidth" [style.minHeight]="sizeStyle.minHeight" [style.color]="color"
+    [style.backgroundColor]="backgroundColor" [style.borderColor]="borderColor" (click)="handleClick()">
+    
+    @if(leftIcon){
+    <i class="button-icon" [style.width]="sizeStyle.iconSize" [style.height]="sizeStyle.iconSize" [style.fontSize]="sizeStyle.iconSize">
+        {{leftIcon}}
+    </i>
+    }
+
+    <span class="button-content" [style.minWidth]="sizeStyle.contentWidth" [style.minHeight]="sizeStyle.contentHeight" 
+        [style.fontSize]="fontSize || sizeStyle.fontSize" [style.color]="color">
+        {{ content }}
+    </span>
+
+    @if(rightIcon){
+    <i class="button-icon" [style.width]="sizeStyle.iconSize" [style.height]="sizeStyle.iconSize" [style.fontSize]="sizeStyle.iconSize" [style.color]="color">
+        {{rightIcon}}
+    </i>
+    }
+</button>

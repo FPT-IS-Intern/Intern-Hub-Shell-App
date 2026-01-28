@@ -1,3 +1,5 @@
+// Sidebar Component - System Design Format
+
 .sidebar-wrapper {
   width: 56px;
   height: 100%;
@@ -9,7 +11,7 @@
   padding: 8px;
 
   background-color: var(--brand-400);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
 
   overflow: hidden;
 
@@ -22,6 +24,5 @@
 .sidebar-wrapper:hover .sidebar {
   width: 227px;
   padding: 16px;
-  background-color: var(--theme-neutral-light-100);
+  background-color: var(--neutral-color-100);
 }
-

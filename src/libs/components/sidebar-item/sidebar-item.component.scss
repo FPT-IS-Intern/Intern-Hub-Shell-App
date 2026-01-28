@@ -1,3 +1,5 @@
+// Sidebar Item Component - System Design Format
+
 .sidebar-item {
   display: flex;
   align-items: center;
@@ -23,7 +25,7 @@
 
   flex-shrink: 0;
 
-  color: var(--neutral-200);
+  color: var(--neutral-color-200);
 }
 
 .sidebar-item a {
@@ -32,7 +34,7 @@
   display: none;
   padding: 8px;
 
-  color: var(--neutral-200);
+  color: var(--neutral-color-200);
   text-decoration: none;
 
   opacity: 0;

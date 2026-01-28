@@ -1,0 +1,63 @@
+<div class="web-container">
+  <ng-template #textRight let-content>
+    <p class="text-gray-700">{{ content }}</p>
+  </ng-template>
+
+  <ng-template #buttonRight let-onClick="onClick">
+    <button class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800" (click)="onClick()">
+      Xem chi tiết
+    </button>
+  </ng-template>
+  <div class="main-layout">
+    <app-header-component></app-header-component>
+
+    <div class="layout-body">
+      <div class="layout-body-sidebar">
+        <app-sidebar></app-sidebar>
+      </div>
+
+      <div class="layout-body-content">
+        <!-- DEMO BUTTON AREA -->
+        <div class="demo-buttons">
+          <!-- Row 1: Brand buttons -->
+          <app-button-container size="xs" content="XS" backgroundColor="var(--brand-600)" color="#fff" (buttonClick)="onButtonClick('XS Brand')"></app-button-container>
+          <app-button-container size="sm" content="SM Button" leftIcon="◀" rightIcon="▶" backgroundColor="var(--brand-600)" color="#fff" (buttonClick)="onButtonClick('SM Brand')"></app-button-container>
+          <app-button-container size="md" content="MD Button" leftIcon="◀" rightIcon="▶" backgroundColor="var(--brand-600)" color="#fff" (buttonClick)="onButtonClick('MD Brand')"></app-button-container>
+          <app-button-container size="lg" content="LG Button" leftIcon="◀" rightIcon="▶" backgroundColor="var(--brand-600)" color="#fff" (buttonClick)="onButtonClick('LG Brand')"></app-button-container>
+        </div>
+        
+        <div class="demo-buttons">
+          <!-- Row 2: Primary buttons -->
+          <app-button-container size="xs" content="XS" backgroundColor="var(--primary-600)" color="#fff" (buttonClick)="onButtonClick('XS Primary')"></app-button-container>
+          <app-button-container size="sm" content="SM Button" leftIcon="★" rightIcon="★" backgroundColor="var(--primary-600)" color="#fff" (buttonClick)="onButtonClick('SM Primary')"></app-button-container>
+          <app-button-container size="md" content="MD Button" leftIcon="★" rightIcon="★" backgroundColor="var(--primary-600)" color="#fff" (buttonClick)="onButtonClick('MD Primary')"></app-button-container>
+          <app-button-container size="lg" content="LG Button" leftIcon="★" rightIcon="★" backgroundColor="var(--primary-600)" color="#fff" (buttonClick)="onButtonClick('LG Primary')"></app-button-container>
+        </div>
+
+        <!-- APPROVAL LIST DEMO -->
+        <div class="demo-approval-list">
+          <app-approval-list 
+            [rows]="approvalRows"
+            headerContentLeft="Thao tác"
+            headerContentRight="Danh sách chờ duyệt">
+          </app-approval-list>
+        </div>
+
+        <!-- ROUTER CONTENT -->
+        <router-outlet />
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- POPUP CONFIRM DEMO -->
+<app-pop-up-confirm 
+  *ngIf="showPopup"
+  imgUrl="/Bộ icon message (1).svg"
+  title="Xác nhận hành động"
+  content="Bạn có chắc chắn muốn thực hiện hành động này không?"
+  colorButton="var(--brand-600)"
+  (confirmClick)="onPopupConfirm()"
+  (cancelClick)="onPopupCancel()">
+</app-pop-up-confirm>

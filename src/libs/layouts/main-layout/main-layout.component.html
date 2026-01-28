@@ -1,13 +1,4 @@
 <div class="web-container">
-  <ng-template #textRight let-content>
-    <p class="text-gray-700">{{ content }}</p>
-  </ng-template>
-
-  <ng-template #buttonRight let-onClick="onClick">
-    <button class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800" (click)="onClick()">
-      Xem chi tiết
-    </button>
-  </ng-template>
   <div class="main-layout">
     <app-header-component></app-header-component>
 
@@ -18,11 +9,6 @@
 
       <div class="layout-body-content">
         <router-outlet />
-
-        <!-- APPROVAL LIST -->
-        <app-approval-list headerContentRight="Quản lí duyệt tài khoản" headerContentLeft="Xem tất cả"
-          [rows]="rows"></app-approval-list>
-
       </div>
     </div>
   </div>
