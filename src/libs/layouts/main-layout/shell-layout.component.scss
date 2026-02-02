@@ -1,16 +1,17 @@
 .web-container {
   background-color: var(--brand-100);
-  min-height: 100vh;
+  height: 100vh;
   width: 100vw; // Full viewport width
   display: flex;
   justify-content: center;
   padding: 4px; // Padding cho container
-  overflow-x: hidden;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .main-layout {
   background-color: transparent; // Transparent để thấy brand-100 từ container
-  min-height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -21,6 +22,8 @@
   margin: 0;
   display: flex;
   flex: 1;
+  overflow: hidden;
+  min-height: 0; // ✅ THÊM
 
   .layout-body-sidebar {
     border-radius: 8px;
@@ -33,6 +36,8 @@
   background-color: var(--neutral-alpha-white);
   border-radius: 8px;
   overflow-y: auto;
+  min-width: 0;
+  padding: 0 24px;
 }
 
 // Mobile Sidebar Overlay
@@ -60,5 +65,69 @@
     &.mobile-open {
       left: 0;
     }
+  }
+}
+
+//////////// WARNING MOBILE
+// Mobile Warning Message
+.mobile-warning {
+  display: none; // Ẩn mặc định
+  position: fixed;
+  inset: 0; // top / right / bottom / left = 0
+  z-index: 9999;
+
+  background-color: var(--neutral-alpha-white);
+
+  padding: 24px;
+
+  overflow-y: auto; // ✅ Cho phép scroll
+  overflow-x: hidden;
+}
+
+// Nội dung warning
+.mobile-warning-content {
+  max-width: 400px;
+  margin: auto; // ✅ Center khi ngắn, scroll khi dài
+  text-align: center;
+
+  padding-bottom: 24px;
+
+  img {
+    width: 80%;
+    max-width: 300px;
+    margin: 0 auto 24px;
+    display: block;
+  }
+
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--neutral-900);
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--neutral-600);
+    line-height: 1.5;
+  }
+}
+
+// Responsive - Mobile < 500px
+@media (max-width: 500px) {
+  .mobile-warning {
+    display: block !important; // ⚠️ KHÔNG dùng flex
+  }
+
+  // Ẩn toàn bộ main layout
+  .main-layout {
+    display: none !important;
+  }
+
+  // Reset container
+  .web-container {
+    padding: 0;
+    background-color: var(--neutral-alpha-white);
   }
 }
