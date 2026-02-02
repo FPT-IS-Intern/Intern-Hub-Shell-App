@@ -26,7 +26,7 @@
   padding: 0 0 12px 20px; // Padding cho container
 
   .layout-body-sidebar {
-    border-radius: 8px;
+    border-radius: 16px;
     flex-shrink: 0;
     overflow: hidden;
     height: 100%;
@@ -40,6 +40,7 @@
   overflow-y: auto;
   min-width: 0;
   padding: 0 24px;
+  max-width: 1287px;
 }
 
 // Mobile Sidebar Overlay
