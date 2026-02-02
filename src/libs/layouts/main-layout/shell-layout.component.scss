@@ -4,7 +4,6 @@
   width: 100vw; // Full viewport width
   display: flex;
   justify-content: center;
-  padding: 4px; // Padding cho container
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -24,10 +23,13 @@
   flex: 1;
   overflow: hidden;
   min-height: 0; // ✅ THÊM
+  padding: 0 0 12px 20px; // Padding cho container
 
   .layout-body-sidebar {
     border-radius: 8px;
     flex-shrink: 0;
+    overflow: hidden;
+    height: 100%;
   }
 }
 
