@@ -1,14 +1,12 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { DynamicDsService } from 'dynamic-ds';
-import { MainLayoutTestComponent } from '../libs/layouts/main-layout-test/main-layout-test.component';
+import { ShellLayoutComponent } from '../libs/layouts/main-layout/shell-layout.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    MainLayoutTestComponent,
-],
-  templateUrl: './app.component.html'
+  imports: [ShellLayoutComponent],
+  templateUrl: './app.html',
 })
 export class App implements OnInit {
   protected readonly title = signal('shell-app');

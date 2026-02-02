@@ -1,0 +1,22 @@
+<div class="web-container">
+  <div class="main-layout">
+    <!-- Header Component -->
+    <app-header-component [data]="headerData"></app-header-component>
+
+    <div class="layout-body">
+      <!-- Sidebar Component -->
+      <div class="layout-body-sidebar" [class.mobile-open]="isMobileSidebarOpen">
+        <app-sidebar [data]="sidebarData"></app-sidebar>
+      </div>
+
+      <!-- Mobile Sidebar Overlay -->
+      @if (isMobileSidebarOpen) {
+        <div class="sidebar-overlay" (click)="closeMobileSidebar()" onkeypress=""></div>
+      }
+
+      <div class="layout-body-content">
+        <router-outlet />
+      </div>
+    </div>
+  </div>
+</div>
