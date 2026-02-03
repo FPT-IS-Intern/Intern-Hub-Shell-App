@@ -1,61 +1,94 @@
 .web-container {
   background-color: var(--brand-100);
   height: 100vh;
-  width: 100vw; // Full viewport width
+  width: 100vw;
   display: flex;
   justify-content: center;
-  overflow: hidden;
   box-sizing: border-box;
+  overflow: hidden;
+  padding-right: 0; /* ✅ Không padding bên phải để scroll sát edge */
 }
 
 .main-layout {
-  background-color: transparent; // Transparent để thấy brand-100 từ container
-  height: 100%;
+  background-color: transparent;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 1370px; // Max width để center trên màn hình lớn
+  max-width: 1370px;
+  overflow: hidden;
 }
 
 .layout-body {
-  margin: 0;
   display: flex;
+  align-items: stretch;
   flex: 1;
+  padding: 0 0 12px 20px;
   overflow: hidden;
-  min-height: 0; // ✅ THÊM
-  padding: 0 0 12px 20px; // Padding cho container
+  min-height: 0;
+}
 
-  .layout-body-sidebar {
-    border-radius: 16px;
-    flex-shrink: 0;
-    overflow: hidden;
-    height: 100%;
-  }
+.layout-body-sidebar {
+  border-radius: 16px;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+}
+
+.side-bar-data {
+  height: 100%;
+  width: 59px;
+  transition: width 0.3s ease;
+  overflow: hidden; /* ✅ Sidebar KHÔNG scroll */
+}
+
+.layout-body-sidebar:hover .side-bar-data {
+  width: 227px;
 }
 
 .layout-body-content {
   flex: 1;
   background-color: var(--neutral-alpha-white);
-  border-radius: 8px;
-  overflow-y: auto;
+  border-radius: 8px 0 0 8px; /* ✅ Bo tròn bên trái, phải vuông để scroll sát edge */
   min-width: 0;
-  padding: 0 24px;
-  max-width: 1287px;
+  padding: 24px;
+  overflow-y: scroll; /* ✅ Content scroll */
+  overflow-x: hidden;
+  height: 100%;
 }
 
-// Mobile Sidebar Overlay
-.sidebar-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
+/* Hoặc cách 2: Dùng scrollbar-gutter */
+.layout-body-content {
+  scrollbar-gutter: stable; /* Dành chỗ cho scrollbar */
+}
+
+/* Custom scrollbar */
+.layout-body-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.layout-body-content::-webkit-scrollbar-track {
+  background: var(--brand-100); /* ✅ Màu giống container */
+  border-radius: 0;
+}
+
+.layout-body-content::-webkit-scrollbar-thumb {
+  background: var(--neutral-300);
+  border-radius: 4px;
+}
+
+.layout-body-content::-webkit-scrollbar-thumb:hover {
+  background: var(--neutral-400);
 }
 
 // Responsive
 @media (max-width: 768px) {
+  .layout-body-content {
+    border-radius: 8px; /* Mobile thì bo tròn bình thường */
+    margin-right: 0;
+  }
+
   .layout-body-sidebar {
     position: fixed;
     top: 0;
@@ -69,30 +102,28 @@
       left: 0;
     }
   }
+
+  .side-bar-data {
+    width: 280px;
+  }
 }
 
 //////////// WARNING MOBILE
-// Mobile Warning Message
 .mobile-warning {
-  display: none; // Ẩn mặc định
+  display: none;
   position: fixed;
-  inset: 0; // top / right / bottom / left = 0
+  inset: 0;
   z-index: 9999;
-
   background-color: var(--neutral-alpha-white);
-
   padding: 24px;
-
-  overflow-y: auto; // ✅ Cho phép scroll
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
-// Nội dung warning
 .mobile-warning-content {
   max-width: 400px;
-  margin: auto; // ✅ Center khi ngắn, scroll khi dài
+  margin: auto;
   text-align: center;
-
   padding-bottom: 24px;
 
   img {
@@ -117,18 +148,15 @@
   }
 }
 
-// Responsive - Mobile < 500px
 @media (max-width: 500px) {
   .mobile-warning {
-    display: block !important; // ⚠️ KHÔNG dùng flex
+    display: block !important;
   }
 
-  // Ẩn toàn bộ main layout
   .main-layout {
     display: none !important;
   }
 
-  // Reset container
   .web-container {
     padding: 0;
     background-color: var(--neutral-alpha-white);

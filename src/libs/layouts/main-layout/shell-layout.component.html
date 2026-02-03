@@ -8,13 +8,15 @@
   </div>
 
   <div class="main-layout">
-    <!-- Header Component -->
+    <!-- Header Component - Fixed -->
     <app-header-component [data]="headerData"></app-header-component>
 
     <div class="layout-body">
-      <!-- Sidebar Component -->
+      <!-- Sidebar Component - Fixed -->
       <div class="layout-body-sidebar" [class.mobile-open]="isMobileSidebarOpen">
-        <app-sidebar [data]="sidebarData"></app-sidebar>
+        <div class="side-bar-data">
+          <app-sidebar [data]="sidebarData"></app-sidebar>
+        </div>
       </div>
 
       <!-- Mobile Sidebar Overlay -->
@@ -22,6 +24,7 @@
         <div class="sidebar-overlay" (click)="closeMobileSidebar()" onkeypress=""></div>
       }
 
+      <!-- Content - Scrollable -->
       <div class="layout-body-content">
         <router-outlet />
       </div>

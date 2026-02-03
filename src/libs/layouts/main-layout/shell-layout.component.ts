@@ -68,7 +68,7 @@ export class ShellLayoutComponent {
 
   sidebarData = {
     backgroundColor: 'var(--brand-500)',
-    width: '100px',
+    width: '59px',
     menuItems: [
       {
         iconLeft: 'dsi-home-01-line',
