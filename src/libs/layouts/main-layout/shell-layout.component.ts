@@ -1,7 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent, SidebarComponent } from '@goat-bravos/intern-hub-layout';
+import {
+  HeaderComponent,
+  IconData,
+  SidebarComponent,
+  SidebarData,
+} from '@goat-bravos/intern-hub-layout';
 
 @Component({
   selector: 'app-shell-layout',
@@ -13,6 +18,9 @@ import { HeaderComponent, SidebarComponent } from '@goat-bravos/intern-hub-layou
 export class ShellLayoutComponent {
   // Mobile sidebar state
   isMobileSidebarOpen = false;
+
+  // Desktop sidebar state
+  isSidebarExpanded = false;
 
   headerData = {
     logo: 'https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg',
@@ -66,61 +74,117 @@ export class ShellLayoutComponent {
     ],
   };
 
-  sidebarData = {
+  sidebarData: SidebarData = {
     backgroundColor: 'var(--brand-500)',
-    width: '59px',
+    collapseIcon: 'dsi-arrow-left-line',
+    expandIcon: 'dsi-arrow-right-line',
+    toggleButtonBackgroundColor: 'var(--brand-700)',
+    closeButtonBackgroundColor: 'var(--neutral-color-50)',
+    toggleButtonIconColor: 'var(--neutral-alpha-white)',
+    toggleButtonWidth: '32px',
+    toggleButtonHeight: '32px',
+    toggleButtonSize: 'sm',
+
     menuItems: [
       {
         iconLeft: 'dsi-home-01-line',
         content: 'Trang chủ',
         url: '/homePage',
         colorIconLeft: 'var(--neutral-color-100)',
-        colorIconLeftHover: 'var(--neutral-color-500)',
-        colorContent: 'var(--neutral-color-500)',
+        colorIconLeftHover: 'var(--brand-500)',
+        colorContent: 'var(--neutral-color-300)',
+        colorContentHover: 'var(--brand-500)',
+        backgroundColorHover: 'var(--neutral-100)',
+        borderRadius: '8px',
+        width: '100%',
+        height: '48px',
       },
       {
         iconLeft: 'dsi-user-01-line',
         content: 'Quản lý người dùng',
         url: '/users',
         colorIconLeft: 'var(--neutral-color-100)',
-        colorIconLeftHover: 'var(--neutral-color-500)',
-        colorContent: 'var(--neutral-color-500)',
+        colorIconLeftHover: 'var(--brand-500)',
+        colorContent: 'var(--neutral-color-300)',
+        colorContentHover: 'var(--brand-500)',
+        backgroundColorHover: 'var(--neutral-100)',
+        borderRadius: '8px',
+        width: '100%',
+        height: '48px',
       },
       {
-        iconLeft: 'dsi-home-01-line',
+        iconLeft: 'dsi-briefcase-line',
         content: 'Dự án',
         url: '/projects',
         colorIconLeft: 'var(--neutral-color-100)',
-        colorIconLeftHover: 'var(--neutral-color-500)',
-        colorContent: 'var(--neutral-color-500)',
+        colorIconLeftHover: 'var(--brand-500)',
+        colorContent: 'var(--neutral-color-300)',
+        colorContentHover: 'var(--brand-500)',
+        backgroundColorHover: 'var(--neutral-100)',
+        borderRadius: '8px',
+        width: '100%',
+        height: '48px',
       },
       {
-        iconLeft: 'dsi-home-01-line',
+        iconLeft: 'dsi-calendar-line',
         content: 'Lịch làm việc',
         url: '/calendar',
         colorIconLeft: 'var(--neutral-color-100)',
-        colorIconLeftHover: 'var(--neutral-color-500)',
-        colorContent: 'var(--neutral-color-500)',
+        colorIconLeftHover: 'var(--brand-500)',
+        colorContent: 'var(--neutral-color-300)',
+        colorContentHover: 'var(--brand-500)',
+        backgroundColorHover: 'var(--neutral-100)',
+        borderRadius: '8px',
+        width: '100%',
+        height: '48px',
       },
       {
         iconLeft: 'dsi-chart-line',
         content: 'Thống kê',
         url: '/statistics',
         colorIconLeft: 'var(--neutral-color-100)',
-        colorIconLeftHover: 'var(--neutral-color-500)',
-        colorContent: 'var(--neutral-color-500)',
+        colorIconLeftHover: 'var(--brand-500)',
+        colorContent: 'var(--neutral-color-300)',
+        colorContentHover: 'var(--brand-500)',
+        backgroundColorHover: 'var(--neutral-100)',
+        borderRadius: '8px',
+        width: '100%',
+        height: '48px',
       },
       {
         iconLeft: 'dsi-team-line',
         content: 'Nhóm',
         url: '/teams',
         colorIconLeft: 'var(--neutral-color-100)',
-        colorIconLeftHover: 'var(--neutral-color-500)',
-        colorContent: 'var(--neutral-color-500)',
+        colorIconLeftHover: 'var(--brand-500)',
+        colorContent: 'var(--neutral-color-300)',
+        colorContentHover: 'var(--brand-500)',
+        backgroundColorHover: 'var(--neutral-100)',
+        borderRadius: '8px',
+        width: '100%',
+        height: '48px',
       },
     ],
   };
 
+  // Data bổ sung truyền vào Input lẻ của SidebarComponent
+  toggleButtonIconConfig: IconData[] = [
+    {
+      icon: 'dsi-arrow-right-line',
+      colorIcon: 'var(--neutral-color-100)',
+      width: '16px',
+      height: '16px',
+    },
+  ];
+
+  closeButtonIconConfig: IconData[] = [
+    {
+      icon: 'dsi-arrow-left-line',
+      colorIcon: 'var(--neutral-color-700)',
+      width: '16px',
+      height: '16px',
+    },
+  ];
   // Header Action Handlers
   handleSearch(): void {
     console.log('🔍 Search clicked');
@@ -140,6 +204,12 @@ export class ShellLayoutComponent {
 
   handleSettings(): void {
     console.log('⚙️ Settings clicked');
+  }
+
+  // Sidebar Toggle Handler
+  onSidebarToggle(expanded: boolean): void {
+    this.isSidebarExpanded = expanded;
+    console.log('Sidebar expanded:', expanded);
   }
 
   // Mobile Sidebar Toggle

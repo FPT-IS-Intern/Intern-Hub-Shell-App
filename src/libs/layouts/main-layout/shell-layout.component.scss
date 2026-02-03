@@ -6,7 +6,6 @@
   justify-content: center;
   box-sizing: border-box;
   overflow: hidden;
-  padding-right: 0; /* ✅ Không padding bên phải để scroll sát edge */
 }
 
 .main-layout {
@@ -26,41 +25,34 @@
   padding: 0 0 12px 20px;
   overflow: hidden;
   min-height: 0;
+  gap: 12px; /* ✅ Thêm khoảng cách giữa sidebar và content */
 }
 
 .layout-body-sidebar {
-  border-radius: 16px;
   flex-shrink: 0;
-  overflow: hidden;
+  overflow: visible; /* ✅ Đổi từ hidden sang visible */
   position: relative;
-  z-index: 10;
-}
-
-.side-bar-data {
-  height: 100%;
+  z-index: 100; /* ✅ Tăng z-index cao hơn content */
   width: 59px;
   transition: width 0.3s ease;
-  overflow: hidden; /* ✅ Sidebar KHÔNG scroll */
-}
 
-.layout-body-sidebar:hover .side-bar-data {
-  width: 227px;
+  &.expanded {
+    width: 227px;
+  }
 }
 
 .layout-body-content {
   flex: 1;
   background-color: var(--neutral-alpha-white);
-  border-radius: 8px 0 0 8px; /* ✅ Bo tròn bên trái, phải vuông để scroll sát edge */
+  border-radius: 8px;
   min-width: 0;
   padding: 24px;
-  overflow-y: scroll; /* ✅ Content scroll */
+  position: relative;
+  z-index: 1; /* ✅ z-index thấp hơn sidebar */
+
+  overflow-y: scroll;
   overflow-x: hidden;
   height: 100%;
-}
-
-/* Hoặc cách 2: Dùng scrollbar-gutter */
-.layout-body-content {
-  scrollbar-gutter: stable; /* Dành chỗ cho scrollbar */
 }
 
 /* Custom scrollbar */
@@ -69,7 +61,7 @@
 }
 
 .layout-body-content::-webkit-scrollbar-track {
-  background: var(--brand-100); /* ✅ Màu giống container */
+  background: var(--brand-100);
   border-radius: 0;
 }
 
@@ -82,29 +74,40 @@
   background: var(--neutral-400);
 }
 
+/* Sidebar overlay cho mobile */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
 // Responsive
 @media (max-width: 768px) {
+  .layout-body {
+    padding: 0 0 12px 0;
+    gap: 0; /* ✅ Bỏ gap trên mobile */
+  }
+
   .layout-body-content {
-    border-radius: 8px; /* Mobile thì bo tròn bình thường */
-    margin-right: 0;
+    border-radius: 8px;
+    margin-left: 0;
+    padding: 16px;
   }
 
   .layout-body-sidebar {
     position: fixed;
     top: 0;
     left: -280px;
-    width: 280px;
+    width: 280px !important;
     height: 100vh;
     z-index: 1000;
     transition: left 0.3s ease;
+    background-color: var(--neutral-alpha-white);
 
     &.mobile-open {
       left: 0;
     }
-  }
-
-  .side-bar-data {
-    width: 280px;
   }
 }
 

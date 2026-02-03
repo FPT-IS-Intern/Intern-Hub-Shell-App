@@ -24,10 +24,10 @@ export const routes: Routes = [
   //   path: 'notification',
   //   loadChildren: () => loadRemoteModule('notification', './routes').then((m) => m.routes),
   // },
-  // {
-  //   path: 'lms',
-  //   loadChildren: () => loadRemoteModule('lms', './routes').then((m) => m.routes),
-  // },
+  {
+    path: 'lms',
+    loadChildren: () => loadRemoteModule('lms', './routes').then((m) => m.routes),
+  },
   // {
   //   path: 'hrm',
   //   loadChildren: () => loadRemoteModule('hrm', './routes').then((m) => m.routes),
