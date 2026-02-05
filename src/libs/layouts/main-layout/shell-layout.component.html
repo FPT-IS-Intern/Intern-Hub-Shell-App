@@ -8,11 +8,9 @@
   </div>
 
   <div class="main-layout">
-    <!-- Header Component - Fixed -->
     <app-header-component [data]="headerData"></app-header-component>
 
     <div class="layout-body">
-      <!-- Sidebar Component - Fixed -->
       <div
         class="layout-body-sidebar"
         [class.mobile-open]="isMobileSidebarOpen"
@@ -34,7 +32,9 @@
 
       <!-- Content - Scrollable -->
       <div class="layout-body-content">
-        <router-outlet />
+        <div class="content-wrapper">
+          <router-outlet />
+        </div>
       </div>
     </div>
   </div>

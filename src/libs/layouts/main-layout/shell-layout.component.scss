@@ -1,3 +1,6 @@
+$radius: 28px;
+$padding-header: 12px 20px 12px 16px;
+
 .web-container {
   background-color: var(--brand-100);
   height: 100vh;
@@ -14,7 +17,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 1370px;
+  max-width: 100vw;
   overflow: hidden;
 }
 
@@ -25,53 +28,68 @@
   padding: 0 0 12px 20px;
   overflow: hidden;
   min-height: 0;
-  gap: 12px; /* ✅ Thêm khoảng cách giữa sidebar và content */
+  gap: 12px;
 }
 
 .layout-body-sidebar {
   flex-shrink: 0;
-  overflow: visible; /* ✅ Đổi từ hidden sang visible */
-  position: relative;
-  z-index: 100; /* ✅ Tăng z-index cao hơn content */
   width: 59px;
   transition: width 0.3s ease;
+  position: relative; // Đảm bảo sidebar chiếm diện tích thực để đẩy content
 
   &.expanded {
     width: 227px;
+  }
+
+  app-sidebar {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 }
 
 .layout-body-content {
   flex: 1;
+  min-width: 0; // Quan trọng: Cho phép content co lại khi sidebar chiếm chỗ
   background-color: var(--neutral-alpha-white);
   border-radius: 8px;
-  min-width: 0;
   padding: 24px;
-  position: relative;
-  z-index: 1; /* ✅ z-index thấp hơn sidebar */
+  z-index: 1;
 
-  overflow-y: scroll;
-  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+
+  overflow-x: auto; // Hiện scroll ngang nếu wrapper bên dưới vượt quá không gian khả dụng
+  overflow-y: auto;
   height: 100%;
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--neutral-300);
+    border-radius: 4px;
+    &:hover {
+      background: var(--neutral-400);
+    }
+  }
+
+  @supports (scrollbar-color: auto) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--neutral-300) transparent;
+  }
 }
 
-/* Custom scrollbar */
-.layout-body-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.layout-body-content::-webkit-scrollbar-track {
-  background: var(--brand-100);
-  border-radius: 0;
-}
-
-.layout-body-content::-webkit-scrollbar-thumb {
-  background: var(--neutral-300);
-  border-radius: 4px;
-}
-
-.layout-body-content::-webkit-scrollbar-thumb:hover {
-  background: var(--neutral-400);
+.content-wrapper {
+  width: 100%;
+  // Đồng bộ với min-width 1060px của Service LMS
+  min-width: 1060px;
+  transition: all 0.3s ease;
 }
 
 /* Sidebar overlay cho mobile */
@@ -86,13 +104,16 @@
 @media (max-width: 768px) {
   .layout-body {
     padding: 0 0 12px 0;
-    gap: 0; /* ✅ Bỏ gap trên mobile */
+    gap: 0;
   }
 
   .layout-body-content {
     border-radius: 8px;
-    margin-left: 0;
     padding: 16px;
+  }
+
+  .content-wrapper {
+    min-width: unset; // Bỏ chặn min-width trên mobile
   }
 
   .layout-body-sidebar {
@@ -111,7 +132,7 @@
   }
 }
 
-//////////// WARNING MOBILE
+//////////// WARNING MOBILE (Giữ nguyên logic của bạn)
 .mobile-warning {
   display: none;
   position: fixed;
@@ -119,49 +140,13 @@
   z-index: 9999;
   background-color: var(--neutral-alpha-white);
   padding: 24px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.mobile-warning-content {
-  max-width: 400px;
-  margin: auto;
-  text-align: center;
-  padding-bottom: 24px;
-
-  img {
-    width: 80%;
-    max-width: 300px;
-    margin: 0 auto 24px;
-    display: block;
-  }
-
-  h2 {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--neutral-900);
-    margin-bottom: 12px;
-    line-height: 1.4;
-  }
-
-  p {
-    font-size: 14px;
-    color: var(--neutral-600);
-    line-height: 1.5;
-  }
 }
 
 @media (max-width: 500px) {
   .mobile-warning {
     display: block !important;
   }
-
   .main-layout {
     display: none !important;
-  }
-
-  .web-container {
-    padding: 0;
-    background-color: var(--neutral-alpha-white);
   }
 }

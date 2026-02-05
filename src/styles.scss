@@ -26,6 +26,13 @@
       BlinkMacSystemFont,
       'Segoe UI',
       sans-serif;
+    --z-shell: 100;
+    --z-header: 100;
+    --z-sidebar: 100;
+
+    /* Overlay & Modal (micro FE dùng chung) */
+    --z-overlay: 1000;
+    --z-modal: 1100;
   }
 }
 
@@ -41,4 +48,5 @@ body {
   width: 100%;
   overflow-x: hidden;
   font-family: inherit;
+  height: 100%;
 }
