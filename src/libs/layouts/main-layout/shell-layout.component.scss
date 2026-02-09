@@ -90,6 +90,8 @@ $padding-header: 12px 20px 12px 16px;
   // Đồng bộ với min-width 1060px của Service LMS
   min-width: 1060px;
   transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
 }
 
 /* Sidebar overlay cho mobile */

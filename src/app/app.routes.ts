@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { loadRemoteModule } from '@angular-architects/native-federation';
+import { ErrorLayoutComponent } from '../libs/layouts/error-layout/error-layout.component';
 
 export const routes: Routes = [
   {
@@ -36,4 +37,8 @@ export const routes: Routes = [
   //   path: 'boPortal',
   //   loadChildren: () => loadRemoteModule('boPortal', './routes').then((m) => m.routes),
   // },
+  {
+    path: 'error',
+    loadComponent:() =>  ErrorLayoutComponent,
+  }
 ];

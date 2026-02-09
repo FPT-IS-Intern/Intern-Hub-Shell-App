@@ -108,8 +108,8 @@ export class ShellLayoutComponent {
       },
       {
         iconLeft: 'dsi-briefcase-line',
-        content: 'Dự án',
-        url: '/projects',
+        content: 'Error',
+        url: '/error',
         colorIconLeft: 'var(--neutral-color-100)',
         colorIconLeftHover: 'var(--brand-500)',
         colorContent: 'var(--neutral-color-400)',
