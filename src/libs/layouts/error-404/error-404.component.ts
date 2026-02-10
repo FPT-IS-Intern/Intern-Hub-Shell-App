@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-error-layout',
-  templateUrl: './error-layout.component.html',
-  styleUrls: ['./error-layout.component.scss'],
+  selector: 'app-error-404-layout',
+  templateUrl: './error-404.component.html',
+  styleUrls: ['./error-404.component.scss'],
 })
-export class ErrorLayoutComponent {
+export class Error404LayoutComponent {
   @Input() imageSrc: string = 'https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/Group%20652.svg';
   @Input() title: string = '404';
   @Input() description: string =
