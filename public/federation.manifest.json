@@ -1,9 +1,9 @@
 {
-  "homePage": "http://localhost:4207/remoteEntry.json",
   "auth": "http://localhost:4201/remoteEntry.json",
   "scheduler": "http://localhost:4202/remoteEntry.json",
   "notification": "http://localhost:4203/remoteEntry.json",
   "lms": "http://localhost:4204/remoteEntry.json",
   "hrm": "http://localhost:4205/remoteEntry.json",
-  "boPortal": "http://localhost:4206/remoteEntry.json"
+  "boPortal": "http://localhost:4206/remoteEntry.json",
+  "homePage": "http://localhost:4207/remoteEntry.json"
 }
