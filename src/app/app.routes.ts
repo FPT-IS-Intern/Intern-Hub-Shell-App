@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { safeLoadRemoteRoutes } from './utils/safe-load-remote';
 import { errorRoutes } from './guards/error.routes';
 
-
 export const routes: Routes = [
   {
     path: '',
