@@ -1,11 +1,11 @@
 import { Component, inject, signal, OnInit, Inject } from '@angular/core';
 import { DynamicDsService, SYSTEM_DESIGN_CONFIG } from 'dynamic-ds';
-import { ShellLayoutComponent } from '../libs/layouts/main-layout/shell-layout.component';
-
+import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ShellLayoutComponent],
+  imports: [RouterOutlet, CommonModule],
   templateUrl: './app.html',
 })
 export class App implements OnInit {

@@ -68,99 +68,110 @@ export class ShellLayoutComponent {
   };
 
   sidebarData: SidebarData = {
-    backgroundColor: 'var(--brand-500)',
+    // ===== Layout =====
+    backgroundColor: 'var(--neutral-color-50)',
     collapseIcon: 'dsi-arrow-left-line',
     expandIcon: 'dsi-arrow-right-line',
+
     toggleButtonBackgroundColor: 'var(--brand-600)',
-    closeButtonBackgroundColor: 'var(--neutral-color-50)',
     toggleButtonIconColor: 'var(--neutral-alpha-white)',
     toggleButtonWidth: '32px',
     toggleButtonHeight: '32px',
     toggleButtonSize: 'sm',
+
+    closeButtonBackgroundColor: 'var(--neutral-color-50)',
     closeButtonMarginRight: '12px',
 
+    // ===== DEFAULT (collapsed & expanded dùng chung) =====
+    defaultWidth: '100%',
+    defaultHeight: '48px',
+    defaultBorderRadius: '8px',
+
+    defaultColorIconLeft: 'var(--neutral-color-10)',
+    defaultColorContent: 'var(--neutral-color-600)',
+    defaultBackgroundColor: 'transparent',
+
+    // ===== HOVER =====
+    defaultColorIconLeftHover: 'var(--brand-600)',
+    defaultColorContentHover: 'var(--brand-600)',
+    defaultBackgroundColorHover: 'var(--brand-50)',
+
+    // ===== ACTIVE =====
+    activeColorIconLeft: 'var(--brand-500)',
+    activeColorContent: 'var(--brand-500)',
+    activeBackgroundColor: 'var(--brand-200)',
+
+    // ===== DISABLED =====
+    disabledColorIconLeft: 'var(--neutral-color-300)',
+    disabledColorContent: 'var(--neutral-color-300)',
+    disabledBackgroundColor: 'transparent',
+
+    // ===== EXPANDED MODE OVERRIDE (optional) =====
+    defaultColorIconLeftExpanded: 'var(--neutral-color-400)',
+    defaultColorIconRightExpanded: 'var(--neutral-color-400)',
+    defaultColorContentExpanded: 'var(--neutral-color-400)',
+    defaultBackgroundColorExpanded: 'transparent',
+    defaultBackgroundColorHoverExpanded: 'var(--neutral-color-100)',
+
+    // =========================
+    // Menu Items
+    // =========================
     menuItems: [
       {
         iconLeft: 'dsi-home-01-line',
         content: 'Trang Chủ',
         url: '/homePage',
-        colorIconLeft: 'var(--neutral-color-100)',
-        colorIconLeftHover: 'var(--neutral-color-600)',
-        colorContent: 'var(--neutral-color-600)',
-        colorContentHover: 'var(--neutral-color-600)',
-        backgroundColorHover: 'var(--neutral-color-100)',
-        borderRadius: '8px',
-        width: '100%',
-        height: '48px',
+      },
+      {
+        iconLeft: 'dsi-home-01-line',
+        content: 'Button',
+        url: '/button',
       },
       {
         iconLeft: 'dsi-user-01-line',
         content: 'Khóa Học',
-        url: '/lms',
-        colorIconLeft: 'var(--neutral-color-100)',
-        colorIconLeftHover: 'var(--brand-500)',
-        colorContent: 'var(--neutral-color-400)',
-        colorContentHover: 'var(--brand-500)',
-        backgroundColorHover: 'var(--neutral-100)',
-        borderRadius: '8px',
-        width: '100%',
-        height: '48px',
+        url: '/lms/courses',
       },
       {
         iconLeft: 'dsi-briefcase-line',
-        content: 'Error',
-        url: '/error',
-        colorIconLeft: 'var(--neutral-color-100)',
-        colorIconLeftHover: 'var(--brand-500)',
-        colorContent: 'var(--neutral-color-400)',
-        colorContentHover: 'var(--brand-500)',
-        backgroundColorHover: 'var(--neutral-100)',
-        borderRadius: '8px',
-        width: '100%',
-        height: '48px',
+        content: 'Dự án',
+        url: '/projects',
       },
       {
         iconLeft: 'dsi-calendar-line',
-        content: 'Quản lí người dùng',
-        url: '/hrm',
-        colorIconLeft: 'var(--neutral-color-100)',
-        colorIconLeftHover: 'var(--brand-500)',
-        colorContent: 'var(--neutral-color-400)',
-        colorContentHover: 'var(--brand-500)',
-        backgroundColorHover: 'var(--neutral-100)',
-        borderRadius: '8px',
-        width: '100%',
-        height: '48px',
+        content: 'Lịch làm việc',
+        url: '/date-picker',
       },
       {
         iconLeft: 'dsi-chart-line',
-        content: 'Thống kê',
-        url: '/statistics',
-        colorIconLeft: 'var(--neutral-color-100)',
-        colorIconLeftHover: 'var(--brand-500)',
-        colorContent: 'var(--neutral-color-400)',
-        colorContentHover: 'var(--brand-500)',
-        backgroundColorHover: 'var(--neutral-100)',
-        borderRadius: '8px',
-        width: '100%',
-        height: '48px',
+        content: 'Input',
+        url: '/input',
       },
       {
-        iconLeft: 'dsi-team-line',
+        iconLeft: 'dsi-arrow-circle-broken-up-line',
         content: 'Nhóm',
         url: '/teams',
-        colorIconLeft: 'var(--neutral-color-100)',
-        colorIconLeftHover: 'var(--brand-500)',
-        colorContent: 'var(--neutral-color-400)',
-        colorContentHover: 'var(--brand-500)',
-        backgroundColorHover: 'var(--neutral-100)',
-        borderRadius: '8px',
-        width: '100%',
-        height: '48px',
+        iconRight: 'dsi-arrow-circle-up-line',
+        children: [
+          {
+            iconLeft: 'dsi-user-01-lino',
+            content: 'Trang Chủ',
+            url: '/homePage',
+          },
+           {
+            iconLeft: 'dsi-user-01-lino',
+            content: 'Trang Chủ',
+            url: '/homePage',
+          },
+        ],
+      },
+      {
+        iconLeft: 'dsi-lock-01-line',
+        content: 'Disabled item',
+        disabled: true,
       },
     ],
   };
-
   // Data bổ sung truyền vào Input lẻ của SidebarComponent
   toggleButtonIconConfig: IconData[] = [
     {
