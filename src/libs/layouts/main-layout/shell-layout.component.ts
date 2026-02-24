@@ -130,7 +130,7 @@ export class ShellLayoutComponent {
       {
         iconLeft: 'dsi-user-01-line',
         content: 'Khóa Học',
-        url: '/lms/courses',
+        url: '/lms',
       },
       {
         iconLeft: 'dsi-briefcase-line',

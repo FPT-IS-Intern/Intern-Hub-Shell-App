@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { safeLoadRemoteRoutes } from './utils/safe-load-remote';
 import { errorRoutes } from './guards/error.routes';
 import { ShellLayoutComponent } from '../libs/layouts/main-layout/shell-layout.component';
+import { Error404LayoutComponent } from '../libs/layouts/error-404/error-404.component';
 
 export const routes: Routes = [
   {
@@ -29,14 +30,14 @@ export const routes: Routes = [
         path: 'hrm',
         loadChildren: safeLoadRemoteRoutes('hrm'),
       },
+      {
+        path: 'error',
+        children: errorRoutes,
+      },
+      {
+        path: '**',
+        component: Error404LayoutComponent,
+      },
     ],
-  },
-  {
-    path: 'error',
-    children: errorRoutes,
-  },
-  {
-    path: '**',
-    redirectTo: 'error/404',
   },
 ];
