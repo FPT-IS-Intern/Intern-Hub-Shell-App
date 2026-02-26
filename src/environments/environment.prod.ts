@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:8080/api/v1', // Replace with production URL later
+  apiUrl: 'https://internhub-v2.bbtech.io.vn/api',
 };
