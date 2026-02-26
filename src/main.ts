@@ -1,8 +1,9 @@
 import { initFederation } from '@angular-architects/native-federation';
+import { environment } from './environments/environment';
 
 // Khởi tạo cấu hình Runtime Cấp Toàn Cục (Global Runtime Config)
 const appEnv = {
-  apiUrl: 'http://localhost:8080/api/v1',
+  apiUrl: environment.apiUrl,
 };
 
 (window as any).__env = appEnv;
