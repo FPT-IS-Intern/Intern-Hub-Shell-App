@@ -9,9 +9,12 @@ const appEnv = {
 
 (window as any).__env = appEnv;
 try {
-  // await initFederation('https://s3.vn-hcm-1.vietnix.cloud/bravos/federation.manifest.json');
-  await initFederation('federation.manifest.local.json');
-  console.log('Nạp federation manifest thành công');
+  const manifestFile = environment.production
+    ? 'federation.manifest.json'
+    : 'federation.manifest.local.json';
+
+  await initFederation(manifestFile);
+  console.log(`Nạp federation manifest (${manifestFile}) thành công`);
   await import('./bootstrap');
 } catch (err) {
   console.error(err);
