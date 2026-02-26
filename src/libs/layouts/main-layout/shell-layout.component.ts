@@ -33,7 +33,7 @@ export class ShellLayoutComponent {
 
     headerItems: [
       {
-        icon: 'dsi-home-01-line',
+        icon: '	dsi-notification-text-line',
         content: 'Search',
         colorIcon: 'var(--brand-700)',
         width: '16px',
@@ -41,7 +41,7 @@ export class ShellLayoutComponent {
         method: () => this.handleSearch(),
       },
       {
-        icon: 'dsi-message-notification-circle-line',
+        icon: '	dsi-message-notification-circle-line',
         content: 'Notifications',
         colorIcon: 'var(--brand-700)',
         width: '16px',
@@ -55,14 +55,6 @@ export class ShellLayoutComponent {
         width: '16px',
         height: '16px',
         method: () => this.handleMessages(),
-      },
-      {
-        icon: 'dsi-info-circle-line',
-        content: 'Help',
-        colorIcon: 'var(--brand-700)',
-        width: '16px',
-        height: '16px',
-        method: () => this.handleHelp(),
       },
     ],
   };
@@ -122,53 +114,33 @@ export class ShellLayoutComponent {
         content: 'Trang Chủ',
         url: '/homePage',
       },
-      {
-        iconLeft: 'dsi-home-01-line',
-        content: 'Button',
-        url: '/button',
-      },
-      {
-        iconLeft: 'dsi-user-01-line',
-        content: 'Khóa Học',
-        url: '/lms',
-      },
-      {
-        iconLeft: 'dsi-briefcase-line',
-        content: 'Dự án',
-        url: '/projects',
-      },
-      {
-        iconLeft: 'dsi-calendar-line',
-        content: 'Lịch làm việc',
-        url: '/date-picker',
-      },
-      {
-        iconLeft: 'dsi-chart-line',
-        content: 'Input',
-        url: '/input',
-      },
-      {
+       {
         iconLeft: 'dsi-arrow-circle-broken-up-line',
-        content: 'Nhóm',
-        url: '/teams',
+        content: 'Lộ Trình Đào tạo',
         iconRight: 'dsi-arrow-circle-up-line',
         children: [
           {
             iconLeft: 'dsi-user-01-lino',
-            content: 'Trang Chủ',
-            url: '/homePage',
-          },
-           {
-            iconLeft: 'dsi-user-01-lino',
-            content: 'Trang Chủ',
-            url: '/homePage',
+            content: 'Bài Học',
+            url: '/lms',
           },
         ],
       },
+      
       {
-        iconLeft: 'dsi-lock-01-line',
-        content: 'Disabled item',
-        disabled: true,
+        iconLeft: 'dsi-user-01-line',
+        content: 'Quản Lí Dự Án',
+        url: '/projects',
+      },
+      {
+        iconLeft: 'dsi-briefcase-line',
+        content: 'Tạo Phiếu',
+        url: '/tickets',
+      },
+      {
+        iconLeft: '	dsi-mail-01-line',
+        content: 'Hòm Thư Góp Ý',
+        url: '/feedback',
       },
     ],
   };
