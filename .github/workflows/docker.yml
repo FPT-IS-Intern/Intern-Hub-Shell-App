@@ -41,10 +41,7 @@ jobs:
         with:
           images: ${{ secrets.DOCKERHUB_REGISTRY }}/internhub-v2/dev/shell
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=sha,prefix=sha-,format=short
-            type=ref,event=branch
-            type=raw,value={{sha}}
+            type=raw,value=latest
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
