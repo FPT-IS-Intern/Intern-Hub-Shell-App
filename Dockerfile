@@ -7,9 +7,7 @@ RUN npm install --legacy-peer-deps
 COPY . .
 RUN npm run build --configuration=production
 
-
 FROM nginx:stable-alpine
-
 
 COPY --from=build-stage /app/dist/intern-hub-shell-app/browser /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
