@@ -52,8 +52,11 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss"],
-            "polyfills": ["es-module-shims"]
+            "styles": [
+              "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
+              "src/styles.scss"
+            ],
+            "polyfills": ["zone.js", "es-module-shims"]
           },
           "configurations": {
             "production": {

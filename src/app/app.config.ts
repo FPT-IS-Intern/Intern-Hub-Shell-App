@@ -1,16 +1,31 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  ApplicationConfig,
+  provideBrowserGlobalErrorListeners,
+  provideZoneChangeDetection,
+  LOCALE_ID,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { registerLocaleData } from '@angular/common';
 import { HttpInterceptorFn, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { authInterceptor } from '@goat-bravos/shared-lib-client';
+import { SYSTEM_DESIGN_CONFIG } from 'dynamic-ds';
+import { NZ_I18N, vi_VN } from 'ng-zorro-antd/i18n';
+import localeVi from '@angular/common/locales/vi';
 
 import { routes } from './app.routes';
-import { SYSTEM_DESIGN_CONFIG } from 'dynamic-ds';
+
+registerLocaleData(localeVi);
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor as unknown as HttpInterceptorFn])),
+    provideAnimationsAsync(),
+    { provide: NZ_I18N, useValue: vi_VN },
+    { provide: LOCALE_ID, useValue: 'vi' },
     {
       provide: SYSTEM_DESIGN_CONFIG,
       useValue: {

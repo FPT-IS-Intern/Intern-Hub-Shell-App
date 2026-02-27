@@ -7,15 +7,17 @@ const appEnv = {
   lmsFileBaseUrl: (environment as any).lmsFileBaseUrl,
 };
 
-(window as any).__env = appEnv;
-try {
-  const manifestFile = environment.production
-    ? 'federation.manifest.json'
-    : 'federation.manifest.local.json';
+(globalThis as any).__env = appEnv;
 
-  await initFederation(manifestFile);
-  console.log(`Nạp federation manifest (${manifestFile}) thành công`);
-  await import('./bootstrap');
-} catch (err) {
-  console.error(err);
-}
+const manifestFile = environment.production
+  ? 'federation.manifest.json'
+  : 'federation.manifest.local.json';
+
+initFederation(manifestFile)
+  .then(() => {
+    console.log(`Nạp federation manifest (${manifestFile}) thành công`);
+    return import('./bootstrap');
+  })
+  .catch((err) => {
+    console.error('Lỗi khi khởi tạo Native Federation:', err);
+  }); // <--- Thêm dấu đóng ngoặc ở đây
