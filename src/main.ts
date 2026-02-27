@@ -20,4 +20,4 @@ initFederation(manifestFile)
   })
   .catch((err) => {
     console.error('Lỗi khi khởi tạo Native Federation:', err);
-  }); // <--- Thêm dấu đóng ngoặc ở đây
+  });
