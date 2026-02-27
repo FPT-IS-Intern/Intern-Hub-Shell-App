@@ -1,11 +1,13 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { RouterOutlet, Router } from '@angular/router';
 import { HeaderComponent, HeaderData } from '../../components/header/header.component';
 import { SidebarComponent, SidebarData } from '../../components/sidebar/sidebar.component';
 import { IconData } from '@goat-bravos/intern-hub-layout';
 import { AuthService } from '../../services/auth.service';
 import { StorageUtil } from '@goat-bravos/shared-lib-client';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-shell-layout',
@@ -14,8 +16,9 @@ import { StorageUtil } from '@goat-bravos/shared-lib-client';
   templateUrl: './shell-layout.component.html',
   styleUrls: ['./shell-layout.component.scss'],
 })
-export class ShellLayoutComponent {
+export class ShellLayoutComponent implements OnInit {
   private authService = inject(AuthService);
+  private userService = inject(UserService);
   private router = inject(Router);
 
   // Mobile sidebar state
@@ -183,6 +186,45 @@ export class ShellLayoutComponent {
       height: '16px',
     },
   ];
+
+  ngOnInit(): void {
+    this.loadCurrentUser();
+  }
+
+  private loadCurrentUser(): void {
+    this.userService.getMe().subscribe({
+      next: (response) => {
+        if (!response.data) {
+          return;
+        }
+
+        this.headerData = {
+          ...this.headerData,
+          userMenuData: {
+            ...this.headerData.userMenuData,
+            userName: response.data.fullName || this.headerData.userMenuData.userName,
+            userEmail: response.data.email || this.headerData.userMenuData.userEmail,
+            userRole: response.data.role || this.headerData.userMenuData.userRole,
+          },
+        };
+      },
+      error: (err: HttpErrorResponse) => {
+        const contentType = err.headers?.get('content-type');
+        const parseError = err.status === 200;
+
+        console.error('Failed to load current user:', {
+          status: err.status,
+          statusText: err.statusText,
+          message: err.message,
+          url: err.url,
+          contentType,
+          parseError,
+          error: err.error,
+        });
+      },
+    });
+  }
+
   // Header Action Handlers
   handleSearch(): void {
     console.log('🔍 Search clicked');
