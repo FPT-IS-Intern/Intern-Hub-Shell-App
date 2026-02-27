@@ -1,21 +1,25 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from '@goat-bravos/shared-lib-client';
 
 import { routes } from './app.routes';
-import {SYSTEM_DESIGN_CONFIG} from 'dynamic-ds';
+import { SYSTEM_DESIGN_CONFIG } from 'dynamic-ds';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes), {
+    provideRouter(routes),
+    provideHttpClient(withInterceptors([authInterceptor])),
+    {
       provide: SYSTEM_DESIGN_CONFIG,
       useValue: {
         brand: '#E18308',
         primary: '#006BDF',
         secondary: '#9F5100',
         functional: '#006BDF',
-        utility: '#CF0026'
-      }
-    }
-  ]
+        utility: '#CF0026',
+      },
+    },
+  ],
 };

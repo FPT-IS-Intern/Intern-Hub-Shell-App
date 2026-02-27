@@ -5,7 +5,7 @@ import { HeaderComponent, HeaderData } from '../../components/header/header.comp
 import { SidebarComponent, SidebarData } from '../../components/sidebar/sidebar.component';
 import { IconData } from '@goat-bravos/intern-hub-layout';
 import { AuthService } from '../../services/auth.service';
-import { StorageUtil } from '../../utils/storage.util';
+import { StorageUtil } from '@goat-bravos/shared-lib-client';
 
 @Component({
   selector: 'app-shell-layout',
