@@ -1,6 +1,7 @@
-import { Component, Input, HostListener, ElementRef, inject } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IconComponent, IconData } from '@goat-bravos/intern-hub-layout';
+import { UserMenuComponent, UserMenuData } from '../user-menu/user-menu.component';
 
 export interface HeaderAction {
   icon: IconData | string;
@@ -15,57 +16,35 @@ export interface HeaderAction {
 
 export interface HeaderData {
   headerItems: HeaderAction[];
-  userName: string;
-  userEmail?: string;
-  userRole?: string;
-  userIcon?: IconData | string;
-  userIconColor?: string;
-  dropdownIcon?: IconData | string;
-  dropdownIconColor?: string;
   logo?: string;
-  userMenuItems?: HeaderAction[];
+  userMenuData: UserMenuData;
 }
 
 @Component({
   selector: 'app-header-component',
   standalone: true,
-  imports: [CommonModule, IconComponent],
+  imports: [CommonModule, IconComponent, UserMenuComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
   @Input() data: HeaderData = {
     headerItems: [],
-    userName: 'Guest',
-    userIcon: 'dsi-user-01-line',
-    dropdownIcon: 'dsi-arrow-down-solid',
     logo: 'assets/FPT-IS-Logo.png',
-    userMenuItems: [],
+    userMenuData: {
+      userName: 'Guest',
+      userIcon: 'dsi-user-01-line',
+      dropdownIcon: 'dsi-arrow-down-solid',
+      userMenuItems: [],
+    },
   };
 
   @Input() paddingHeader: string = '12px 20px 12px 16px';
-
-  private elementRef = inject(ElementRef);
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: Event): void {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.isUserMenuOpen = false;
-    }
-  }
-
-  isUserMenuOpen = false;
-
-  toggleUserMenu(event: Event): void {
-    event.stopPropagation();
-    this.isUserMenuOpen = !this.isUserMenuOpen;
-  }
 
   handleActionClick(item: HeaderAction, event: Event): void {
     if (item.method) {
       event.preventDefault();
       item.method();
-      this.isUserMenuOpen = false;
     }
   }
 

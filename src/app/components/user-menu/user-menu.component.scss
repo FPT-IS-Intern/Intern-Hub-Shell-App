@@ -1,0 +1,136 @@
+$padding-user: 12px 20px 12px 16px;
+
+.user-menu-container {
+  position: relative;
+  margin-left: 4px;
+}
+
+.user-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: $padding-user;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--neutral-color-100);
+  }
+
+  .user-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--brand-600);
+    white-space: nowrap;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .rotate {
+    transform: rotate(180deg);
+    transition: transform 0.2s ease;
+  }
+}
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 240px;
+  background-color: var(--neutral-color-10);
+  border-radius: 12px;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.2s ease-out;
+
+  .dropdown-header {
+    padding: 12px 16px;
+
+    .user-info-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      .info-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--neutral-color-900);
+      }
+
+      .info-email {
+        font-size: 12px;
+        color: var(--neutral-color-500);
+      }
+
+      .info-role {
+        display: inline-block;
+        margin-top: 4px;
+        padding: 2px 8px;
+        background-color: var(--brand-50);
+        color: var(--brand-600);
+        font-size: 11px;
+        font-weight: 600;
+        border-radius: 4px;
+        width: fit-content;
+      }
+    }
+  }
+
+  .dropdown-divider {
+    height: 1px;
+    background-color: var(--neutral-color-200);
+    margin: 8px 0;
+  }
+
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    color: var(--neutral-color-700);
+    font-size: 14px;
+    font-weight: 500;
+
+    &:hover {
+      background-color: var(--brand-50);
+      color: var(--brand-600);
+      padding-left: 16px;
+    }
+
+    app-icon {
+      color: inherit;
+    }
+
+    &:last-child {
+      color: var(--utility-500);
+      &:hover {
+        background-color: var(--utility-50);
+        color: var(--utility-600);
+      }
+    }
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

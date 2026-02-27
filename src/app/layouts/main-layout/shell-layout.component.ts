@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from '../../components/header/header.component';
+import { RouterOutlet, Router } from '@angular/router';
+import { HeaderComponent, HeaderData } from '../../components/header/header.component';
 import { SidebarComponent, SidebarData } from '../../components/sidebar/sidebar.component';
 import { IconData } from '@goat-bravos/intern-hub-layout';
+import { AuthService } from '../../services/auth.service';
+import { StorageUtil } from '../../utils/storage.util';
 
 @Component({
   selector: 'app-shell-layout',
@@ -13,26 +15,20 @@ import { IconData } from '@goat-bravos/intern-hub-layout';
   styleUrls: ['./shell-layout.component.scss'],
 })
 export class ShellLayoutComponent {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
   // Mobile sidebar state
   isMobileSidebarOpen = false;
 
   // Desktop sidebar state
   isSidebarExpanded = false;
 
-  headerData = {
+  headerData: HeaderData = {
     logo: 'https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg',
-    userName: 'Nguyễn Văn An',
-    userEmail: 'an.nv@fpt.com',
-    userRole: 'Fullstack Developer',
-    userIcon: 'dsi-user-01-line',
-    userIconColor: 'var(--brand-500)',
-    dropdownIcon: 'dsi-arrow-down-solid',
-    dropdownIconColor: 'var(--brand-500)',
-    minWidth: '1366px',
-
     headerItems: [
       {
-        icon: '	dsi-notification-text-line',
+        icon: 'dsi-notification-text-line',
         content: 'Search',
         colorIcon: 'var(--brand-700)',
         width: '16px',
@@ -40,7 +36,7 @@ export class ShellLayoutComponent {
         method: () => this.handleSearch(),
       },
       {
-        icon: '	dsi-message-notification-circle-line',
+        icon: 'dsi-message-notification-circle-line',
         content: 'Notifications',
         colorIcon: 'var(--brand-700)',
         width: '16px',
@@ -56,23 +52,32 @@ export class ShellLayoutComponent {
         method: () => this.handleMessages(),
       },
     ],
-    userMenuItems: [
-      {
-        icon: 'dsi-user-01-line',
-        content: 'Thông tin cá nhân',
-        method: () => console.log('Profile clicked'),
-      },
-      {
-        icon: 'dsi-settings-line',
-        content: 'Cài đặt',
-        method: () => this.handleSettings(),
-      },
-      {
-        icon: 'dsi-logout-01-line',
-        content: 'Đăng xuất',
-        method: () => this.handleLogout(),
-      },
-    ],
+    userMenuData: {
+      userName: 'Nguyễn Văn An',
+      userEmail: 'an.nv@fpt.com',
+      userRole: 'Fullstack Developer',
+      userIcon: 'dsi-user-01-line',
+      userIconColor: 'var(--brand-500)',
+      dropdownIcon: 'dsi-arrow-down-solid',
+      dropdownIconColor: 'var(--brand-500)',
+      userMenuItems: [
+        {
+          icon: 'dsi-user-01-line',
+          content: 'Thông tin cá nhân',
+          method: () => console.log('Profile clicked'),
+        },
+        {
+          icon: 'dsi-settings-line',
+          content: 'Cài đặt',
+          method: () => this.handleSettings(),
+        },
+        {
+          icon: 'dsi-logout-01-line',
+          content: 'Đăng xuất',
+          method: () => this.handleLogout(),
+        },
+      ],
+    },
   };
 
   sidebarData: SidebarData = {
@@ -154,7 +159,7 @@ export class ShellLayoutComponent {
         url: '/tickets',
       },
       {
-        iconLeft: '	dsi-mail-01-line',
+        iconLeft: 'dsi-mail-01-line',
         content: 'Hòm Thư Góp Ý',
         url: '/feedback',
       },
@@ -200,8 +205,31 @@ export class ShellLayoutComponent {
   }
 
   handleLogout(): void {
-    console.log('🚪 Logging out...');
-    // Add logout logic here (e.g., clear localStorage, redirect to login)
+    const accessToken = StorageUtil.getAccessToken();
+    const refreshToken = StorageUtil.getRefreshToken();
+
+    if (accessToken && refreshToken) {
+      this.authService
+        .logout({
+          accessToken,
+          refreshToken,
+        })
+        .subscribe({
+          next: () => {
+            console.log('🚪 Logged out successfully');
+            this.router.navigate(['/auth']);
+          },
+          error: (err) => {
+            console.error('❌ Logout failed:', err);
+            // Vẫn thực hiện xóa local và chuyển trang nếu có lỗi API để đảm bảo người dùng thoát được
+            StorageUtil.clearAuthData();
+            this.router.navigate(['/auth']);
+          },
+        });
+    } else {
+      StorageUtil.clearAuthData();
+      this.router.navigate(['/auth']);
+    }
   }
 
   // Sidebar Toggle Handler
