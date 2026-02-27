@@ -1,0 +1,68 @@
+<header class="app-header" [style.padding]="paddingHeader">
+  <div class="header-left">
+    <img class="logo" [src]="data.logo || 'assets/FPT-IS-Logo.png'" alt="Logo" />
+  </div>
+
+  <div class="header-right">
+    @for (item of data.headerItems; track $index) {
+      <button
+        class="header-btn"
+        [attr.aria-label]="item.content"
+        (click)="handleActionClick(item, $event)"
+      >
+        <app-icon
+          [iconData]="
+            getIconData(item.icon, item.colorIcon, item.width || '16px', item.height || '16px')
+          "
+        ></app-icon>
+        @if (item.badge) {
+          <span class="badge">{{ item.badge }}</span>
+        }
+      </button>
+    }
+
+    <div class="header-user">
+      <button class="user-btn" (click)="toggleUserMenu($event)">
+        @if (data.userIcon) {
+          <app-icon
+            [iconData]="getIconData(data.userIcon, data.userIconColor, '16px', '16px')"
+          ></app-icon>
+        }
+        <span class="user-name">{{ data.userName }}</span>
+        @if (data.dropdownIcon) {
+          <app-icon
+            [iconData]="getIconData(data.dropdownIcon, data.dropdownIconColor, '16px', '16px')"
+            [class.rotate]="isUserMenuOpen"
+          ></app-icon>
+        }
+      </button>
+
+      @if (isUserMenuOpen && data.userMenuItems && data.userMenuItems.length > 0) {
+        <div class="user-dropdown">
+          <div class="dropdown-header">
+            <div class="user-info-main">
+              <span class="info-name">{{ data.userName }}</span>
+              @if (data.userEmail) {
+                <span class="info-email">{{ data.userEmail }}</span>
+              }
+              @if (data.userRole) {
+                <span class="info-role">{{ data.userRole }}</span>
+              }
+            </div>
+          </div>
+
+          <div class="dropdown-divider"></div>
+
+          @for (menuItem of data.userMenuItems; track $index) {
+            <div class="dropdown-item" (click)="handleActionClick(menuItem, $event)">
+              <app-icon
+                [iconData]="getIconData(menuItem.icon, menuItem.colorIcon, '18px', '18px')"
+              ></app-icon>
+              <span>{{ menuItem.content }}</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</header>

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { Error404LayoutComponent } from '../../libs/layouts/error-404/error-404.component';
+import { Error404LayoutComponent } from '../layouts/error-404/error-404.component';
 
 export const errorRoutes: Routes = [
   {
