@@ -58,4 +58,12 @@ export class StorageUtil {
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
     localStorage.removeItem(this.USER_ID_KEY);
   }
+
+  // Clear everything including Device ID
+  static clearAll(): void {
+    localStorage.removeItem(this.ACCESS_TOKEN_KEY);
+    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+    localStorage.removeItem(this.USER_ID_KEY);
+    localStorage.removeItem(this.DEVICE_ID_KEY);
+  }
 }

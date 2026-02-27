@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, finalize } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LogoutRequest } from '../models/auth.model';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
@@ -24,10 +24,8 @@ export class AuthService {
         headers,
       })
       .pipe(
-        tap((res) => {
-          if (res.status === null || res.status.code === '200') {
-            StorageUtil.clearAuthData();
-          }
+        finalize(() => {
+          StorageUtil.clearAll();
         }),
       );
   }

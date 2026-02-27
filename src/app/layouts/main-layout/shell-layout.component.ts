@@ -222,12 +222,12 @@ export class ShellLayoutComponent {
           error: (err) => {
             console.error('❌ Logout failed:', err);
             // Vẫn thực hiện xóa local và chuyển trang nếu có lỗi API để đảm bảo người dùng thoát được
-            StorageUtil.clearAuthData();
+            StorageUtil.clearAll();
             this.router.navigate(['/auth']);
           },
         });
     } else {
-      StorageUtil.clearAuthData();
+      StorageUtil.clearAll();
       this.router.navigate(['/auth']);
     }
   }
