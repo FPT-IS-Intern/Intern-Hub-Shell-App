@@ -64,6 +64,12 @@
     transform: translateY(0);
   }
 
+  .header-btn-icon {
+    display: inline-block;
+    flex-shrink: 0;
+    background-color: currentColor;
+  }
+
   app-icon {
     display: flex;
     align-items: center;

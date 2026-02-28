@@ -68,7 +68,7 @@ export class ShellLayoutComponent implements OnInit {
         {
           icon: 'dsi-user-01-line',
           content: 'Thông tin cá nhân',
-          method: () => console.log('Profile clicked'),
+          method: () => this.handleComingSoon('Thông tin cá nhân'),
         },
         {
           icon: 'dsi-settings-line',
@@ -209,11 +209,11 @@ export class ShellLayoutComponent implements OnInit {
   }
 
   handleComingSoon(feature: string): void {
-    console.log(`🚀 ${feature} clicked - Coming Soon`);
+    void feature;
   }
 
   handleSettings(): void {
-    console.log('⚙️ Settings clicked');
+    // Placeholder until settings route is available.
   }
 
   handleLogout(): void {
@@ -228,7 +228,6 @@ export class ShellLayoutComponent implements OnInit {
         })
         .subscribe({
           next: () => {
-            console.log('🚪 Logged out successfully');
             this.router.navigate(['/auth']);
           },
           error: (err) => {
@@ -246,7 +245,6 @@ export class ShellLayoutComponent implements OnInit {
   // Sidebar Toggle Handler
   onSidebarToggle(expanded: boolean): void {
     this.isSidebarExpanded = expanded;
-    console.log('Sidebar expanded:', expanded);
   }
 
   // Mobile Sidebar Toggle

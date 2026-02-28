@@ -2,7 +2,6 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IconComponent, IconData } from '@goat-bravos/intern-hub-layout';
 import { UserMenuComponent, UserMenuData } from '../user-menu/user-menu.component';
-import { FeatureDropdownComponent } from '../feature-dropdown/feature-dropdown';
 
 export interface HeaderAction {
   icon: IconData | string;
@@ -24,7 +23,7 @@ export interface HeaderData {
 @Component({
   selector: 'app-header-component',
   standalone: true,
-  imports: [CommonModule, UserMenuComponent, FeatureDropdownComponent],
+  imports: [CommonModule, IconComponent, UserMenuComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })

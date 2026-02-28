@@ -6,6 +6,7 @@ import {
   ButtonContainerComponent,
   IconData,
 } from '@goat-bravos/intern-hub-layout';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 
 export interface SidebarItem {
   iconLeft?: IconData | string;
@@ -75,7 +76,13 @@ export interface SidebarData {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule, FunctionalLabelComponent, ButtonContainerComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FunctionalLabelComponent,
+    ButtonContainerComponent,
+    NzTooltipModule,
+  ],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
 })
@@ -143,8 +150,7 @@ export class SidebarComponent {
     return item.iconRight;
   }
 
-  onMenuItemClick(item: SidebarItem, event: Event): void {
+  onMenuItemClick(item: SidebarItem, _event: Event): void {
     this.activeItem = item;
-    console.log('Menu item clicked:', item, event);
   }
 }

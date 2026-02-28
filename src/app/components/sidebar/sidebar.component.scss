@@ -1,3 +1,8 @@
+/* Tooltip Z-index fix */
+::ng-deep .ant-tooltip {
+  z-index: 2000 !important;
+}
+
 :host {
   display: block;
   height: 100%;
@@ -37,11 +42,6 @@
   .sidebar-wrapper.expanded & {
     padding: 14px 12px 12px;
   }
-}
-
-/* Tooltip Z-index fix */
-::ng-deep .ant-tooltip {
-  z-index: 2000 !important;
 }
 
 .sidebar {

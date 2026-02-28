@@ -12,6 +12,10 @@
         <div class="sidebar-item-container">
           <app-functional-label
             class="sidebar-item"
+            nz-tooltip
+            [nzTooltipTitle]="isSidebarExpanded ? '' : item.content"
+            nzTooltipPlacement="right"
+            [nzTooltipTrigger]="isSidebarExpanded ? null : 'hover'"
             [class.active]="activeItem === item || rla.isActive"
             routerLinkActive="active"
             #rla="routerLinkActive"

@@ -5,10 +5,25 @@
 
   <div class="header-right">
     @for (item of data.headerItems; track $index) {
-      <app-feature-dropdown
-        [iconClass]="item.icon.toString()"
-        [label]="item.content"
-      ></app-feature-dropdown>
+      <button class="header-btn" type="button" (click)="handleActionClick(item, $event)">
+        @if (typeof item.icon === 'string') {
+          <span
+            class="header-btn-icon"
+            [class]="item.icon"
+            [style.color]="item.colorIcon || 'var(--brand-700)'"
+            [style.width]="item.width || '20px'"
+            [style.height]="item.height || '20px'"
+          ></span>
+        } @else {
+          <app-icon
+            [iconData]="getIconData(item.icon, item.colorIcon, item.width, item.height)"
+          ></app-icon>
+        }
+
+        @if (item.badge) {
+          <span class="badge">{{ item.badge }}</span>
+        }
+      </button>
     }
 
     <app-user-menu [data]="data.userMenuData"></app-user-menu>
