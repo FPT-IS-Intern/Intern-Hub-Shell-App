@@ -8,7 +8,7 @@ import { provideRouter } from '@angular/router';
 import { registerLocaleData } from '@angular/common';
 import { HttpInterceptorFn, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { authInterceptor } from '@goat-bravos/shared-lib-client';
+import { authInterceptor, configureAuthInterceptor } from '@goat-bravos/shared-lib-client';
 import { SYSTEM_DESIGN_CONFIG } from 'dynamic-ds';
 import { NZ_I18N, vi_VN } from 'ng-zorro-antd/i18n';
 import localeVi from '@angular/common/locales/vi';
@@ -16,6 +16,14 @@ import localeVi from '@angular/common/locales/vi';
 import { routes } from './app.routes';
 
 registerLocaleData(localeVi);
+
+/**
+ * Cấu hình danh sách path KHÔNG gắn Bearer token.
+ * Tất cả path được quản lý tập trung tại đây.
+ */
+configureAuthInterceptor({
+  excludedPaths: ['/login', '/password-reset', '/refresh', '/hrm/users/positions'],
+});
 
 export const appConfig: ApplicationConfig = {
   providers: [
