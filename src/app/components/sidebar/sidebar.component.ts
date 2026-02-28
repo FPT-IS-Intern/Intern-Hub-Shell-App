@@ -36,8 +36,8 @@ export interface SidebarItem {
 export interface SidebarData {
   menuItems: SidebarItem[];
   backgroundColor?: string;
-  collapseIcon?: string;
-  expandIcon?: string;
+  collapseIcon?: IconData | string;
+  expandIcon?: IconData | string;
   toggleButtonBackgroundColor?: string;
   closeButtonBackgroundColor?: string;
   toggleButtonIconColor?: string;

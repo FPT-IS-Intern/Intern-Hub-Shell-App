@@ -8,6 +8,7 @@ import { IconData } from '@goat-bravos/intern-hub-layout';
 import { AuthService } from '../../services/auth.service';
 import { StorageUtil } from '@goat-bravos/shared-lib-client';
 import { UserService } from '../../services/user.service';
+import { SIDEBAR_ICONS } from '../../core/sidebar-icons';
 
 @Component({
   selector: 'app-shell-layout',
@@ -85,17 +86,17 @@ export class ShellLayoutComponent implements OnInit {
 
   sidebarData: SidebarData = {
     // ===== Layout =====
-    backgroundColor: 'var(--neutral-color-50)',
-    collapseIcon: 'dsi-arrow-left-line',
-    expandIcon: 'dsi-arrow-right-line',
+    backgroundColor: 'var(--brand-600)',
+    collapseIcon: SIDEBAR_ICONS.ARROW_LEFT,
+    expandIcon: SIDEBAR_ICONS.ARROW_RIGHT,
 
     toggleButtonBackgroundColor: 'var(--brand-600)',
-    toggleButtonIconColor: 'var(--neutral-alpha-white)',
+    toggleButtonIconColor: 'var(--neutral-color-10)',
     toggleButtonWidth: '32px',
     toggleButtonHeight: '32px',
     toggleButtonSize: 'sm',
 
-    closeButtonBackgroundColor: 'var(--neutral-color-50)',
+    closeButtonBackgroundColor: 'var(--neutral-color-10)',
     closeButtonMarginRight: '12px',
 
     // ===== DEFAULT (collapsed & expanded dùng chung) =====
@@ -104,18 +105,18 @@ export class ShellLayoutComponent implements OnInit {
     defaultBorderRadius: '8px',
 
     defaultColorIconLeft: 'var(--neutral-color-10)',
-    defaultColorContent: 'var(--neutral-color-600)',
+    defaultColorContent: 'var(--neutral-color-10)',
     defaultBackgroundColor: 'transparent',
 
     // ===== HOVER =====
-    defaultColorIconLeftHover: 'var(--brand-600)',
-    defaultColorContentHover: 'var(--brand-600)',
-    defaultBackgroundColorHover: 'var(--brand-50)',
+    defaultColorIconLeftHover: 'var(--neutral-color-10)',
+    defaultColorContentHover: 'var(--neutral-color-10)',
+    defaultBackgroundColorHover: 'var(--brand-500)',
 
     // ===== ACTIVE =====
-    activeColorIconLeft: 'var(--brand-500)',
-    activeColorContent: 'var(--brand-500)',
-    activeBackgroundColor: 'var(--brand-200)',
+    activeColorIconLeft: 'var(--neutral-color-10)',
+    activeColorContent: 'var(--neutral-color-10)',
+    activeBackgroundColor: 'var(--brand-400)',
 
     // ===== DISABLED =====
     disabledColorIconLeft: 'var(--neutral-color-300)',
@@ -123,65 +124,57 @@ export class ShellLayoutComponent implements OnInit {
     disabledBackgroundColor: 'transparent',
 
     // ===== EXPANDED MODE OVERRIDE (optional) =====
-    defaultColorIconLeftExpanded: 'var(--neutral-color-400)',
-    defaultColorIconRightExpanded: 'var(--neutral-color-400)',
-    defaultColorContentExpanded: 'var(--neutral-color-400)',
+    defaultColorIconLeftExpanded: 'var(--neutral-color-10)',
+    defaultColorIconRightExpanded: 'var(--neutral-color-50)',
+    defaultColorContentExpanded: 'var(--neutral-color-10)',
     defaultBackgroundColorExpanded: 'transparent',
-    defaultBackgroundColorHoverExpanded: 'var(--neutral-color-100)',
+    defaultBackgroundColorHoverExpanded: 'var(--brand-500)',
 
     // =========================
     // Menu Items
     // =========================
     menuItems: [
       {
-        iconLeft: 'dsi-home-01-line',
-        content: 'Trang Chủ',
+        iconLeft: SIDEBAR_ICONS.HOME,
+        content: 'Trang chủ',
         url: '/homePage',
       },
       {
-        iconLeft: 'dsi-arrow-circle-broken-up-line',
-        content: 'Lộ Trình Đào tạo',
-        iconRight: 'dsi-arrow-circle-up-line',
-        children: [
-          {
-            iconLeft: 'dsi-user-01-lino',
-            content: 'Bài Học',
-            url: '/lms',
-          },
-        ],
+        iconLeft: SIDEBAR_ICONS.FEEDBACK,
+        content: 'Hòm thư góp ý',
+        url: '/feedback',
       },
-
       {
-        iconLeft: 'dsi-user-01-line',
-        content: 'Quản Lí Dự Án',
+        iconLeft: SIDEBAR_ICONS.TRAINING,
+        content: 'Lộ trình đào tạo',
+        url: '/lms',
+      },
+      {
+        iconLeft: SIDEBAR_ICONS.PROJECTS,
+        content: 'Dự án',
         url: '/projects',
       },
       {
-        iconLeft: 'dsi-briefcase-line',
-        content: 'Tạo Phiếu',
-        url: '/tickets',
-      },
-      {
-        iconLeft: 'dsi-mail-01-line',
-        content: 'Hòm Thư Góp Ý',
-        url: '/feedback',
+        iconLeft: SIDEBAR_ICONS.NEWS,
+        content: 'Tin tức',
+        url: '/news',
       },
     ],
   };
   // Data bổ sung truyền vào Input lẻ của SidebarComponent
   toggleButtonIconConfig: IconData[] = [
     {
-      icon: 'dsi-arrow-right-line',
-      colorIcon: 'var(--neutral-color-100)',
-      width: '16px',
-      height: '16px',
+      ...SIDEBAR_ICONS.ARROW_RIGHT,
+      colorIcon: 'var(--brand-700)',
+      width: '14px',
+      height: '14px',
     },
   ];
 
   closeButtonIconConfig: IconData[] = [
     {
-      icon: 'dsi-arrow-left-line',
-      colorIcon: 'var(--neutral-color-700)',
+      ...SIDEBAR_ICONS.ARROW_LEFT,
+      colorIcon: 'var(--brand-700)',
       width: '16px',
       height: '16px',
     },

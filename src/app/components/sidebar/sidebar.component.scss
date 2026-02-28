@@ -4,174 +4,192 @@
 }
 
 .sidebar-wrapper {
-  width: 59px;
+  --sidebar-width-collapse: 59px;
+  --sidebar-width-expand: 227px;
+  width: var(--sidebar-width-collapse);
   height: 100%;
-  transition: width 0.3s ease;
-  background-color: transparent;
+  margin-left: 8px;
+  padding: 8px 0;
   position: relative;
   display: flex;
   flex-direction: column;
-  border-radius: 16px;
-  overflow: visible !important;
+  transition: width 0.3s ease;
+  z-index: 1000;
 
   &.expanded {
-    width: 227px;
-    overflow: hidden;
-
-    .sidebar {
-      width: 227px;
-      padding: 16px 8px;
-      background-color: transparent;
-      overflow-y: auto;
-    }
-  }
-
-  > div {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    background-color: var(--brand-500);
-    border-radius: 16px;
-    overflow: visible !important;
+    width: var(--sidebar-width-expand);
   }
 }
 
-.sidebar-item-container {
-  overflow: visible !important;
-  position: relative;
+.sidebar-shell {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 8px 10px;
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--brand-600);
+  border: 1px solid var(--brand-500);
+  transition: all 0.3s ease;
+
+  .sidebar-wrapper.expanded & {
+    padding: 14px 12px 12px;
+  }
+}
+
+/* Tooltip Z-index fix */
+::ng-deep .ant-tooltip {
+  z-index: 2000 !important;
 }
 
 .sidebar {
   display: flex;
+  flex: 1;
+  min-height: 0;
   flex-direction: column;
   gap: 8px;
-  flex: 1;
-
-  width: 59px;
-  padding: 8px;
-  box-sizing: border-box;
-  overflow: visible;
-  background-color: transparent;
-
-  transition:
-    width 0.3s ease,
-    padding 0.3s ease,
-    background-color 0.3s ease;
+  padding: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-.sidebar-wrapper.expanded > div {
-  background-color: var(--neutral-color-50);
+.sidebar-item-container {
+  position: relative;
 }
 
 .sub-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 4px; 
-  padding-left: 12px;
+  display: grid;
+  gap: 4px;
   margin-top: 4px;
-  transition: all 0.3s ease;
-}
-
-.sub-item {
-  ::ng-deep .functional-label {
-    height: 36px !important;
-    font-size: 13px !important;
-    font-weight: 400;
-  }
+  margin-left: 18px;
+  padding-left: 14px;
+  border-left: 1px solid var(--brand-500);
+  animation: none;
 }
 
 .sidebar-item {
   display: block;
-  border-radius: 8px;
+  border-radius: 14px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  overflow: visible;
-  font-weight: 600;
+  position: relative;
+  transition: none;
+
+  ::ng-deep .functional-label {
+    min-width: unset !important;
+    min-height: unset !important;
+    width: 100% !important;
+    height: 48px !important;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    border-radius: inherit;
+    transition: none !important;
+    transition-delay: 0s !important;
+
+    .icon-left-container {
+      margin-right: 12px !important;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
 
   &:hover {
-    background-color: rgba(233, 237, 241, 0.285) !important;
+    background-color: var(--brand-500) !important;
+    transform: none !important;
+  }
+
+  &.active {
+    background-color: var(--brand-400) !important;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 12px auto 12px 0;
+      width: 4px;
+      border-radius: 0 4px 4px 0;
+      background: var(--neutral-color-white);
+    }
   }
 }
 
-.sidebar-wrapper.expanded .sidebar-item:hover {
-  background-color: var(--expanded-hover-bg, var(--neutral-400)) !important;
+.sub-item {
+  ::ng-deep .functional-label {
+    min-height: 38px;
+    font-size: 13px !important;
+    font-weight: 500;
+  }
 }
 
 .sidebar a {
   text-decoration: none;
 }
 
-/* ✅ Toggle button (collapsed state) - FORCE 36x36, radius 8, margin-bottom 16px */
-.sidebar-toggle-button {
-  flex-shrink: 0;
-  margin-bottom: 16px;
-  margin-left: auto;
-  margin-right: auto;
+.sidebar-actions {
+  display: flex;
+  justify-content: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--brand-500);
 
-  /* ✅ Force override button-container styles */
-  ::ng-deep .button-container {
-    width: 36px !important;
-    height: 36px !important;
-    min-width: 36px !important;
-    min-height: 36px !important;
-    max-width: 36px !important;
-    max-height: 36px !important;
-    padding: 0 !important;
-    border-radius: 8px !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &:active {
-      transform: scale(0.9);
-    }
+  &.expanded {
+    justify-content: flex-end;
   }
 }
 
-/* ✅ Close button (expanded state) - FORCE 36x36, radius 8, margin-bottom 16px */
+.sidebar-toggle-button,
 .sidebar-close-button {
-  flex-shrink: 0;
-  margin-bottom: 16px;
+  display: flex;
+}
 
-  /* ✅ Force override button-container styles */
+.sidebar-toggle-button {
   ::ng-deep .button-container {
     width: 36px !important;
     height: 36px !important;
-    min-width: 36px !important;
-    min-height: 36px !important;
-    max-width: 36px !important;
-    max-height: 36px !important;
-    padding: 0 !important;
-    border-radius: 8px !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    background: var(--neutral-color-10) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: none !important;
 
-    &:active {
-      transform: scale(0.9);
+    i {
+      color: var(--brand-600) !important;
+      font-size: 14px !important;
+    }
+
+    &:hover {
+      transform: none !important;
+      background: var(--neutral-color-25) !important;
     }
   }
 }
 
-/* Scrollbar styling cho sidebar */
+.sidebar-close-button {
+  ::ng-deep .button-container {
+    width: 36px !important;
+    height: 36px !important;
+    background: var(--brand-500) !important;
+    border-radius: 10px !important;
+    transition: none !important;
+
+    i {
+      color: var(--neutral-color-10) !important;
+    }
+
+    &:hover {
+      background-color: var(--brand-400) !important;
+      transform: none !important;
+    }
+  }
+}
+
+/* Scrollbar */
 .sidebar::-webkit-scrollbar {
   width: 4px;
 }
 
-.sidebar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
 .sidebar::-webkit-scrollbar-thumb {
-  background: var(--neutral-300);
-  border-radius: 2px;
-}
-
-.sidebar::-webkit-scrollbar-thumb:hover {
-  background: var(--neutral-400);
+  background: var(--brand-400);
+  border-radius: 999px;
 }

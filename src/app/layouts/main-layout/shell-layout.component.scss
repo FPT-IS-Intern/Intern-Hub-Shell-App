@@ -87,8 +87,7 @@ $padding-header: 12px 20px 12px 16px;
 
 .content-wrapper {
   width: 100%;
-  // Đồng bộ với min-width 1060px của Service LMS
-  min-width: 1060px;
+  /* Removed max-width for full flexibility as per Option 3 */
   transition: all 0.3s ease;
 }
 
