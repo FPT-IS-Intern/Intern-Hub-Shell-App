@@ -1,16 +1,21 @@
 <div class="user-menu-container">
   <button class="user-btn" (click)="toggleUserMenu($event)">
-    @if (data.userIcon) {
-      <app-icon
-        [iconData]="getIconData(data.userIcon, data.userIconColor, '16px', '16px')"
-      ></app-icon>
-    }
+    <div class="user-avatar-placeholder">
+      @if (data.userIcon) {
+        <app-icon [iconData]="getIconData(data.userIcon, 'white', '16px', '16px')"></app-icon>
+      } @else {
+        <span>{{ data.userName.charAt(0) }}</span>
+      }
+    </div>
+
     <span class="user-name">{{ data.userName }}</span>
+
     @if (data.dropdownIcon) {
-      <app-icon
-        [iconData]="getIconData(data.dropdownIcon, data.dropdownIconColor, '16px', '16px')"
-        [class.rotate]="isUserMenuOpen"
-      ></app-icon>
+      <div class="dropdown-arrow" [class.rotate]="isUserMenuOpen">
+        <app-icon
+          [iconData]="getIconData(data.dropdownIcon, 'currentColor', '14px', '14px')"
+        ></app-icon>
+      </div>
     }
   </button>
 
@@ -33,7 +38,7 @@
       @for (menuItem of data.userMenuItems; track $index) {
         <div class="dropdown-item" (click)="handleActionClick(menuItem, $event)">
           <app-icon
-            [iconData]="getIconData(menuItem.icon, menuItem.colorIcon, '18px', '18px')"
+            [iconData]="getIconData(menuItem.icon, 'currentColor', '18px', '18px')"
           ></app-icon>
           <span>{{ menuItem.content }}</span>
         </div>

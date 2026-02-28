@@ -32,28 +32,28 @@ export class ShellLayoutComponent implements OnInit {
     logo: 'https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg',
     headerItems: [
       {
-        icon: 'dsi-notification-text-line',
-        content: 'Search',
+        icon: 'custom-icon-search',
+        content: 'Tìm kiếm',
         colorIcon: 'var(--brand-700)',
-        width: '16px',
-        height: '16px',
-        method: () => this.handleSearch(),
+        width: '20px',
+        height: '20px',
+        method: () => this.handleComingSoon('Tìm kiếm'),
       },
       {
-        icon: 'dsi-message-notification-circle-line',
-        content: 'Notifications',
+        icon: 'custom-icon-bell',
+        content: 'Thông báo',
         colorIcon: 'var(--brand-700)',
-        width: '16px',
-        height: '16px',
-        method: () => this.handleNotifications(),
+        width: '20px',
+        height: '20px',
+        method: () => this.handleComingSoon('Thông báo'),
       },
       {
-        icon: 'dsi-mail-01-line',
+        icon: 'custom-icon-mail',
         content: 'Messages',
         colorIcon: 'var(--brand-700)',
-        width: '16px',
-        height: '16px',
-        method: () => this.handleMessages(),
+        width: '20px',
+        height: '20px',
+        method: () => this.handleComingSoon('Tin nhắn'),
       },
     ],
     userMenuData: {
@@ -161,6 +161,7 @@ export class ShellLayoutComponent implements OnInit {
       },
     ],
   };
+
   // Data bổ sung truyền vào Input lẻ của SidebarComponent
   toggleButtonIconConfig: IconData[] = [
     {
@@ -202,37 +203,13 @@ export class ShellLayoutComponent implements OnInit {
         };
       },
       error: (err: HttpErrorResponse) => {
-        const contentType = err.headers?.get('content-type');
-        const parseError = err.status === 200;
-
-        console.error('Failed to load current user:', {
-          status: err.status,
-          statusText: err.statusText,
-          message: err.message,
-          url: err.url,
-          contentType,
-          parseError,
-          error: err.error,
-        });
+        console.error('Failed to load current user:', err);
       },
     });
   }
 
-  // Header Action Handlers
-  handleSearch(): void {
-    console.log('🔍 Search clicked');
-  }
-
-  handleNotifications(): void {
-    console.log('🔔 Notifications clicked');
-  }
-
-  handleMessages(): void {
-    console.log('💬 Messages clicked');
-  }
-
-  handleHelp(): void {
-    console.log('❓ Help clicked');
+  handleComingSoon(feature: string): void {
+    console.log(`🚀 ${feature} clicked - Coming Soon`);
   }
 
   handleSettings(): void {
@@ -256,7 +233,6 @@ export class ShellLayoutComponent implements OnInit {
           },
           error: (err) => {
             console.error('❌ Logout failed:', err);
-            // Vẫn thực hiện xóa local và chuyển trang nếu có lỗi API để đảm bảo người dùng thoát được
             StorageUtil.clearAll();
             this.router.navigate(['/auth']);
           },

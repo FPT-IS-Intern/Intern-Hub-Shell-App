@@ -5,20 +5,10 @@
 
   <div class="header-right">
     @for (item of data.headerItems; track $index) {
-      <button
-        class="header-btn"
-        [attr.aria-label]="item.content"
-        (click)="handleActionClick(item, $event)"
-      >
-        <app-icon
-          [iconData]="
-            getIconData(item.icon, item.colorIcon, item.width || '16px', item.height || '16px')
-          "
-        ></app-icon>
-        @if (item.badge) {
-          <span class="badge">{{ item.badge }}</span>
-        }
-      </button>
+      <app-feature-dropdown
+        [iconClass]="item.icon.toString()"
+        [label]="item.content"
+      ></app-feature-dropdown>
     }
 
     <app-user-menu [data]="data.userMenuData"></app-user-menu>

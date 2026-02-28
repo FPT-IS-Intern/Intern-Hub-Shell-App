@@ -1,16 +1,12 @@
-$radius: 28px;
-$padding-header: 12px 20px 12px 16px;
-
 :host {
   width: 100%;
-  display: flex;
-  justify-content: center;
+  display: block;
 }
 
 .app-header {
-  height: 70px;
+  height: 64px;
   width: 100%;
-  padding: 0 24px;
+  padding: 0 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -23,53 +19,74 @@ $padding-header: 12px 20px 12px 16px;
   align-items: center;
 
   .logo {
-    height: 40px;
+    height: 32px;
     width: auto;
     object-fit: contain;
     cursor: pointer;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
   }
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .header-btn {
   position: relative;
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
-  border-radius: $radius;
-  border: none;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid var(--neutral-color-100);
   cursor: pointer;
-  color: var(--brand-600);
-  transition: all 0.2s ease-in-out;
+  color: var(--brand-700);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 
   &:hover {
-    background-color: var(--neutral-color-100);
-    color: var(--primary-color);
+    background-color: var(--brand-50);
+    border-color: var(--brand-100);
+    color: var(--brand-600);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--brand-600-rgb), 0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  app-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .badge {
     position: absolute;
-    top: -4px;
-    right: -4px;
-    min-width: 16px;
-    height: 16px;
-    padding: 12px 20px 12px 16px;
+    top: -5px;
+    right: -5px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(-utility-500);
-    color: var(--neutral-color-100);
-    border-radius: 8px;
+    background-color: var(--utility-500);
+    color: white;
+    border-radius: 10px;
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 1;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 }
