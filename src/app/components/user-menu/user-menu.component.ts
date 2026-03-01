@@ -1,5 +1,6 @@
 import { Component, Input, HostListener, ElementRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { IconComponent, IconData } from '@goat-bravos/intern-hub-layout';
 
 export interface UserMenuAction {
@@ -37,6 +38,7 @@ export class UserMenuComponent {
   };
 
   private elementRef = inject(ElementRef);
+  private router = inject(Router);
   isUserMenuOpen = false;
 
   @HostListener('document:click', ['$event'])
@@ -52,6 +54,14 @@ export class UserMenuComponent {
   }
 
   handleActionClick(item: UserMenuAction, event: Event): void {
+    if (item.url) {
+      event.preventDefault();
+      const targetUrl = item.url.startsWith('/') ? item.url : `/${item.url}`;
+      this.router.navigateByUrl(targetUrl);
+      this.isUserMenuOpen = false;
+      return;
+    }
+
     if (item.method) {
       event.preventDefault();
       item.method();
