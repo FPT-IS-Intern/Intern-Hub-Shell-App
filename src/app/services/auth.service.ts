@@ -27,6 +27,20 @@ export class AuthService {
       );
   }
 
+  refreshAccessToken(data: {
+    refreshToken: string;
+  }): Observable<ResponseApi<{ accessToken: string; refreshToken: string }>> {
+    const headers = new HttpHeaders({
+      'X-Device-ID': this.getDeviceId(),
+    });
+
+    return this.httpClient.post<ResponseApi<{ accessToken: string; refreshToken: string }>>(
+      `${getBaseUrl()}/auth/refresh`,
+      data,
+      { headers },
+    );
+  }
+
   private getDeviceId(): string {
     let deviceId = StorageUtil.getDeviceId();
     if (!deviceId) {
