@@ -18,9 +18,9 @@ import { SIDEBAR_ICONS } from '../../core/sidebar-icons';
   styleUrls: ['./shell-layout.component.scss'],
 })
 export class ShellLayoutComponent implements OnInit {
-  private authService = inject(AuthService);
-  private userService = inject(UserService);
-  private router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly userService = inject(UserService);
+  private readonly router = inject(Router);
 
   // Mobile sidebar state
   isMobileSidebarOpen = false;
@@ -86,9 +86,9 @@ export class ShellLayoutComponent implements OnInit {
 
   sidebarData: SidebarData = {
     // ===== Layout =====
-    backgroundColor: 'var(--brand-600)',
-    collapseIcon: SIDEBAR_ICONS.ARROW_LEFT,
-    expandIcon: SIDEBAR_ICONS.ARROW_RIGHT,
+    backgroundColor: 'var(--neutral-color-50)',
+    collapseIcon: 'dsi-arrow-left-line',
+    expandIcon: 'dsi-arrow-right-line',
 
     toggleButtonBackgroundColor: 'var(--brand-600)',
     toggleButtonIconColor: 'var(--neutral-color-10)',
@@ -96,7 +96,7 @@ export class ShellLayoutComponent implements OnInit {
     toggleButtonHeight: '32px',
     toggleButtonSize: 'sm',
 
-    closeButtonBackgroundColor: 'var(--neutral-color-10)',
+    closeButtonBackgroundColor: 'var(--neutral-color-50)',
     closeButtonMarginRight: '12px',
 
     // ===== DEFAULT (collapsed & expanded dùng chung) =====
@@ -105,18 +105,18 @@ export class ShellLayoutComponent implements OnInit {
     defaultBorderRadius: '8px',
 
     defaultColorIconLeft: 'var(--neutral-color-10)',
-    defaultColorContent: 'var(--neutral-color-10)',
+    defaultColorContent: 'var(--neutral-color-600)',
     defaultBackgroundColor: 'transparent',
 
     // ===== HOVER =====
-    defaultColorIconLeftHover: 'var(--neutral-color-10)',
-    defaultColorContentHover: 'var(--neutral-color-10)',
-    defaultBackgroundColorHover: 'var(--brand-500)',
+    defaultColorIconLeftHover: 'var(--brand-600)',
+    defaultColorContentHover: 'var(--brand-600)',
+    defaultBackgroundColorHover: 'var(--brand-50)',
 
     // ===== ACTIVE =====
-    activeColorIconLeft: 'var(--neutral-color-10)',
-    activeColorContent: 'var(--neutral-color-10)',
-    activeBackgroundColor: 'var(--brand-400)',
+    activeColorIconLeft: 'var(--brand-500)',
+    activeColorContent: 'var(--brand-500)',
+    activeBackgroundColor: 'var(--brand-200)',
 
     // ===== DISABLED =====
     disabledColorIconLeft: 'var(--neutral-color-300)',
@@ -124,11 +124,11 @@ export class ShellLayoutComponent implements OnInit {
     disabledBackgroundColor: 'transparent',
 
     // ===== EXPANDED MODE OVERRIDE (optional) =====
-    defaultColorIconLeftExpanded: 'var(--neutral-color-10)',
-    defaultColorIconRightExpanded: 'var(--neutral-color-50)',
-    defaultColorContentExpanded: 'var(--neutral-color-10)',
+    defaultColorIconLeftExpanded: 'var(--neutral-color-400)',
+    defaultColorIconRightExpanded: 'var(--neutral-color-400)',
+    defaultColorContentExpanded: 'var(--neutral-color-400)',
     defaultBackgroundColorExpanded: 'transparent',
-    defaultBackgroundColorHoverExpanded: 'var(--brand-500)',
+    defaultBackgroundColorHoverExpanded: 'var(--neutral-color-100)',
 
     // =========================
     // Menu Items
@@ -166,7 +166,7 @@ export class ShellLayoutComponent implements OnInit {
   toggleButtonIconConfig: IconData[] = [
     {
       ...SIDEBAR_ICONS.ARROW_RIGHT,
-      colorIcon: 'var(--brand-700)',
+      colorIcon: 'var(--neutral-color-10)',
       width: '14px',
       height: '14px',
     },
