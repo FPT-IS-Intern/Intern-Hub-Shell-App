@@ -1,12 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import {
-  FunctionalLabelComponent,
-  ButtonContainerComponent,
-  IconData,
-} from '@goat-bravos/intern-hub-layout';
-import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { ButtonContainerComponent, FunctionalLabelComponent, IconData } from '@goat-bravos/intern-hub-layout';
+
 
 export interface SidebarItem {
   iconLeft?: IconData | string;
@@ -37,8 +33,8 @@ export interface SidebarItem {
 export interface SidebarData {
   menuItems: SidebarItem[];
   backgroundColor?: string;
-  collapseIcon?: IconData | string;
-  expandIcon?: IconData | string;
+  collapseIcon?: string;
+  expandIcon?: string;
   toggleButtonBackgroundColor?: string;
   closeButtonBackgroundColor?: string;
   toggleButtonIconColor?: string;
@@ -76,13 +72,7 @@ export interface SidebarData {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    FunctionalLabelComponent,
-    ButtonContainerComponent,
-    NzTooltipModule,
-  ],
+  imports: [CommonModule, RouterModule, FunctionalLabelComponent, ButtonContainerComponent],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
 })
@@ -132,8 +122,8 @@ export class SidebarComponent {
 
     // If it's a string identifier
     if (typeof item.iconRight === 'string') {
-      return isExpanded
-        ? item.iconRight.replace('down', 'up')
+      return isExpanded 
+        ? item.iconRight.replace('down', 'up') 
         : item.iconRight.replace('up', 'down');
     }
 
@@ -143,14 +133,15 @@ export class SidebarComponent {
       if (!iconName) return item.iconRight;
       return {
         ...item.iconRight,
-        icon: isExpanded ? iconName.replace('down', 'up') : iconName.replace('up', 'down'),
+        icon: isExpanded ? iconName.replace('down', 'up') : iconName.replace('up', 'down')
       };
     }
 
     return item.iconRight;
   }
 
-  onMenuItemClick(item: SidebarItem, _event: Event): void {
+  onMenuItemClick(item: SidebarItem, event: Event): void {
     this.activeItem = item;
+    console.log('Menu item clicked:', item, event);
   }
 }
