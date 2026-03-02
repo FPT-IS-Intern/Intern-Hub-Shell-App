@@ -68,7 +68,7 @@ export class ShellLayoutComponent implements OnInit {
         {
           icon: 'dsi-user-01-line',
           content: 'Thông tin cá nhân',
-          url: 'hrm/my-profile',
+          url: 'hrm/profile',
         },
         {
           icon: 'dsi-settings-line',
