@@ -22,7 +22,13 @@ registerLocaleData(localeVi);
  * Tất cả path được quản lý tập trung tại đây.
  */
 configureAuthInterceptor({
-  excludedPaths: ['/login', '/password-reset', '/refresh', '/hrm/users/positions'],
+  excludedPaths: [
+    '/login',
+    '/password-reset',
+    '/refresh',
+    '/hrm/users/positions',
+    '/hrm/users/register',
+  ],
 });
 
 export const appConfig: ApplicationConfig = {
