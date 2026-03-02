@@ -23,11 +23,15 @@ registerLocaleData(localeVi);
  */
 configureAuthInterceptor({
   excludedPaths: [
-    '/login',
-    '/password-reset',
-    '/refresh',
+    // AUTH
+    '/auth/login',
+    '/auth/password-reset',
+    '/auth/refresh',
+
+    // HRM
     '/hrm/users/positions',
     '/hrm/users/register',
+    'hrm/users/check-email',
   ],
 });
 
