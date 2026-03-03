@@ -165,7 +165,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: hidden !important;
   padding-bottom: 8px;
   direction: rtl;
   scrollbar-width: thin;
@@ -173,6 +173,7 @@
 
   > * {
     direction: ltr;
+    max-width: 100%;
   }
 
   &::-webkit-scrollbar {
@@ -198,25 +199,18 @@
 
 @media (max-width: 768px) {
   .header-dropdown {
-    width: min(691px, calc(100vw - 16px));
-    max-width: calc(100vw - 16px);
-    max-height: calc(100vh - 84px);
-    height: min(610px, calc(100vh - 84px));
-    right: -8px;
+    display: none !important;
   }
 }
 
 @media (max-width: 480px) {
   .header-dropdown {
-    width: calc(100vw - 12px);
-    max-width: calc(100vw - 12px);
-    right: -10px;
-    border-radius: 10px;
+    display: none !important;
   }
 }
 
 .header-dropdown-group-label {
-  width: 275px;
+  width: min(275px, calc(100% - 8px));
   height: 24px;
   margin: 0 auto;
   padding: 0 8px;
@@ -229,8 +223,14 @@
   text-transform: uppercase;
 }
 
+.header-dropdown-group-label:not(:first-child) {
+  border-top: 1px solid #edf1f5;
+  margin-top: 6px;
+  padding-top: 6px;
+}
+
 .header-dropdown-item {
-  width: 275px;
+  width: min(275px, calc(100% - 8px));
   height: 70px;
   margin: 0 auto;
   box-sizing: border-box;
@@ -244,7 +244,9 @@
   padding: 10px 8px;
   border-radius: 0;
   cursor: pointer;
-  border-bottom: 0;
+  border: 0 !important;
+  box-shadow: none;
+  outline: none;
 
   &:hover {
     background-color: #f4f6f8;
@@ -252,10 +254,37 @@
 }
 
 .header-dropdown-empty {
-  padding: 16px 12px 20px;
+  min-height: 180px;
+  padding: 22px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  font-size: 13px;
-  color: var(--neutral-color-500);
+  gap: 8px;
+}
+
+.header-dropdown-empty-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid #f0d9bb;
+  background:
+    radial-gradient(circle at center, #f7b261 0 5px, transparent 6px),
+    #fff7ed;
+}
+
+.header-dropdown-empty-title {
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #3d4754;
+}
+
+.header-dropdown-empty-text {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #8d98a7;
 }
 
 .header-dropdown-item-main {

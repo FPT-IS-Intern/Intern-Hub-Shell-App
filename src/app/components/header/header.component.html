@@ -55,7 +55,11 @@
             }
 
             @if (getDisplayedDropdownItems(item).length === 0) {
-              <div class="header-dropdown-empty">Chưa có thông báo</div>
+              <div class="header-dropdown-empty">
+                <div class="header-dropdown-empty-icon"></div>
+                <div class="header-dropdown-empty-title">Chưa có thông báo</div>
+                <div class="header-dropdown-empty-text">Bạn sẽ thấy thông báo mới tại đây.</div>
+              </div>
             } @else {
               @if (item.dropdownType === 'notification') {
                 <div class="header-dropdown-scroll">
