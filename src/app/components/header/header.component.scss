@@ -123,7 +123,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
+  height: 56px;
   margin-bottom: 0;
   padding: 0 2px;
   border-bottom: 1px solid #dbe3ea;
@@ -138,13 +138,14 @@
   border: 0;
   background-color: #d8dde3;
   color: #7d8b97;
-  height: 44px;
-  min-width: 82px;
-  padding: 0 14px;
+  height: 40px;
+  min-width: 0;
+  padding: 0 18px;
   border-radius: 12px;
   font-size: 16px;
   line-height: 1;
   font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
 
   &.active {
@@ -157,13 +158,14 @@
   border: 2px solid #d5882a;
   color: #d5882a;
   background: #fff;
-  height: 44px;
-  min-width: 102px;
-  padding: 0 14px;
+  height: 40px;
+  min-width: 0;
+  padding: 0 18px;
   border-radius: 12px;
   font-size: 16px;
   line-height: 1;
   font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
 }
 
