@@ -123,41 +123,47 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  height: 60px;
+  margin-bottom: 0;
+  padding: 0 2px;
+  border-bottom: 1px solid #dbe3ea;
 }
 
 .header-dropdown-tabs {
   display: flex;
-  gap: 6px;
+  gap: 10px;
 }
 
 .header-dropdown-tab {
   border: 0;
-  background-color: #eef1f5;
-  color: #8d98a7;
-  height: 30px;
-  min-width: 58px;
-  padding: 0 12px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 700;
+  background-color: #d8dde3;
+  color: #7d8b97;
+  height: 44px;
+  min-width: 82px;
+  padding: 0 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 600;
   cursor: pointer;
 
   &.active {
-    background-color: #e89013;
+    background-color: #d5882a;
     color: #fff;
   }
 }
 
 .header-dropdown-view-all {
-  border: 1px solid #e89013;
-  color: #e89013;
+  border: 2px solid #d5882a;
+  color: #d5882a;
   background: #fff;
-  height: 30px;
-  min-width: 70px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 700;
+  height: 44px;
+  min-width: 102px;
+  padding: 0 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 600;
   cursor: pointer;
 }
 
@@ -194,6 +200,9 @@
     display: none;
     width: 0;
     height: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
   }
 
   &::-webkit-scrollbar-button:single-button,
@@ -202,7 +211,27 @@
     display: none;
     width: 0;
     height: 0;
+    min-height: 0;
+    max-height: 0;
+    -webkit-appearance: none;
+    appearance: none;
     background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
+  &::-webkit-scrollbar-button:start:decrement,
+  &::-webkit-scrollbar-button:end:increment {
+    display: none;
+    width: 0;
+    height: 0;
+    min-height: 0;
+    max-height: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
   }
 }
 
@@ -323,15 +352,14 @@
 }
 
 .header-dropdown-meta {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   width: 48px;
   min-width: 48px;
-  margin-top: 0;
+  margin-top: 2px;
   align-self: flex-start;
-  padding-top: 18px;
+  padding-top: 0;
 }
 
 .header-dropdown-time {
