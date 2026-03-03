@@ -223,18 +223,18 @@ export class ShellLayoutComponent implements OnInit {
   }
 
   handleNotificationClick(notification: InAppNotificationResponse): void {
-    if (notification.read) {
-      return;
+    if (!notification.read) {
+      this.notificationService.markOneAsRead(notification.id).subscribe({
+        next: () => {
+          this.loadNotifications(this.notificationFilter);
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Failed to mark notification as read:', err);
+        },
+      });
     }
 
-    this.notificationService.markOneAsRead(notification.id).subscribe({
-      next: () => {
-        this.loadNotifications(this.notificationFilter);
-      },
-      error: (err: HttpErrorResponse) => {
-        console.error('Failed to mark notification as read:', err);
-      },
-    });
+    this.handleNotificationAction(notification.actionData);
   }
 
   handleNotificationViewAll(): void {
@@ -349,5 +349,79 @@ export class ShellLayoutComponent implements OnInit {
   handleNotificationFilterChange(filter: 'all' | 'unread'): void {
     this.notificationFilter = filter;
     this.loadNotifications(filter);
+  }
+
+  private handleNotificationAction(actionData: InAppNotificationResponse['actionData']): void {
+    const payload = this.normalizeActionData(actionData);
+    if (!payload || !payload['action']) {
+      return;
+    }
+
+    const action = String(payload['action']).toLowerCase();
+
+    if (action === 'open_url') {
+      const url = typeof payload['url'] === 'string' ? payload['url'] : '';
+      if (!url) return;
+
+      if (/^https?:\/\//i.test(url)) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      } else {
+        this.router.navigateByUrl(url);
+      }
+      return;
+    }
+
+    if (action === 'open') {
+      const route = this.mapScreenToRoute(payload);
+      if (route) {
+        this.router.navigateByUrl(route);
+      }
+      return;
+    }
+
+    if (action === 'viewed') {
+      return;
+    }
+
+    if (action === 'view_report') {
+      const reportId = typeof payload['id'] === 'string' ? payload['id'] : '';
+      if (reportId) {
+        this.router.navigateByUrl(`/view_report/${reportId}`);
+      }
+    }
+  }
+
+  private normalizeActionData(
+    actionData: InAppNotificationResponse['actionData'],
+  ): Record<string, unknown> | null {
+    if (!actionData) {
+      return null;
+    }
+
+    if (typeof actionData === 'string') {
+      try {
+        const parsed = JSON.parse(actionData);
+        return parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    return actionData as Record<string, unknown>;
+  }
+
+  private mapScreenToRoute(payload: Record<string, unknown>): string | null {
+    const screen = typeof payload['screen'] === 'string' ? payload['screen'] : '';
+    const taskId = typeof payload['task_id'] === 'string' ? payload['task_id'] : '';
+
+    if (!screen) {
+      return null;
+    }
+
+    if (screen === 'task_detail') {
+      return taskId ? `/task_detail/${taskId}` : '/task_detail';
+    }
+
+    return `/${screen}`;
   }
 }
