@@ -4,7 +4,7 @@ import { environment } from './environments/environment';
 // Khởi tạo cấu hình Runtime Cấp Toàn Cục (Global Runtime Config)
 const appEnv = {
   apiUrl: environment.apiUrl,
-  lmsFileBaseUrl: (environment as any).lmsFileBaseUrl,
+  storageFileBaseUrl: (environment as any).storageFileBaseUrl,
 };
 
 (globalThis as any).__env = appEnv;
