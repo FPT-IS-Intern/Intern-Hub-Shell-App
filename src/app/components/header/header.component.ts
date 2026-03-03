@@ -23,6 +23,7 @@ export interface HeaderAction {
   url?: string;
   dropdownType?: 'default' | 'notification';
   viewAllMethod?: () => void;
+  notificationFilterChanged?: (filter: 'all' | 'unread') => void;
   dropdownItems?: HeaderDropdownItem[];
 }
 
@@ -86,10 +87,11 @@ export class HeaderComponent {
     this.openDropdownIndex = null;
   }
 
-  setNotificationFilter(filter: 'all' | 'unread', event: Event): void {
+  setNotificationFilter(filter: 'all' | 'unread', event: Event, item: HeaderAction): void {
     event.preventDefault();
     event.stopPropagation();
     this.notificationFilter = filter;
+    item.notificationFilterChanged?.(filter);
   }
 
   handleViewAll(item: HeaderAction, event: Event): void {

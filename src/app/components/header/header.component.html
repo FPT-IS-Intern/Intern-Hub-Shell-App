@@ -35,7 +35,7 @@
                     class="header-dropdown-tab"
                     type="button"
                     [class.active]="notificationFilter === 'all'"
-                    (click)="setNotificationFilter('all', $event)"
+                    (click)="setNotificationFilter('all', $event, item)"
                   >
                     Tất cả
                   </button>
@@ -43,7 +43,7 @@
                     class="header-dropdown-tab"
                     type="button"
                     [class.active]="notificationFilter === 'unread'"
-                    (click)="setNotificationFilter('unread', $event)"
+                    (click)="setNotificationFilter('unread', $event, item)"
                   >
                     Chưa đọc
                   </button>

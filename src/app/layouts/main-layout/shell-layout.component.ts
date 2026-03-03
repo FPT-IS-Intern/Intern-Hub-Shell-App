@@ -25,6 +25,7 @@ export class ShellLayoutComponent implements OnInit {
   private readonly userService = inject(UserService);
   private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
+  private notificationFilter: 'all' | 'unread' = 'all';
 
   // Mobile sidebar state
   isMobileSidebarOpen = false;
@@ -51,6 +52,7 @@ export class ShellLayoutComponent implements OnInit {
         height: '20px',
         dropdownType: 'notification',
         viewAllMethod: () => this.handleNotificationViewAll(),
+        notificationFilterChanged: (filter) => this.handleNotificationFilterChange(filter),
         badge: '0',
         dropdownItems: [],
       },
@@ -190,7 +192,7 @@ export class ShellLayoutComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCurrentUser();
-    this.loadNotifications();
+    this.loadNotifications('all');
   }
 
   private loadCurrentUser(): void {
@@ -227,7 +229,7 @@ export class ShellLayoutComponent implements OnInit {
 
     this.notificationService.markOneAsRead(notification.id).subscribe({
       next: () => {
-        this.loadNotifications();
+        this.loadNotifications(this.notificationFilter);
       },
       error: (err: HttpErrorResponse) => {
         console.error('Failed to mark notification as read:', err);
@@ -238,7 +240,7 @@ export class ShellLayoutComponent implements OnInit {
   handleNotificationViewAll(): void {
     this.notificationService.markAllAsRead().subscribe({
       next: () => {
-        this.loadNotifications();
+        this.loadNotifications(this.notificationFilter);
       },
       error: (err: HttpErrorResponse) => {
         console.error('Failed to mark all notifications as read:', err);
@@ -290,11 +292,14 @@ export class ShellLayoutComponent implements OnInit {
     this.isMobileSidebarOpen = false;
   }
 
-  private loadNotifications(): void {
+  private loadNotifications(filter: 'all' | 'unread' = 'all'): void {
+    this.notificationFilter = filter;
+    const isRead = filter === 'all' ? undefined : false;
+
     forkJoin({
       unreadCount: this.notificationService.getUnreadCount().pipe(catchError(() => of({ data: 0 }))),
       notifications: this.notificationService
-        .getMyNotifications(0, 10)
+        .getMyNotifications(0, 10, isRead)
         .pipe(catchError(() => of({ data: [] as InAppNotificationResponse[] }))),
     }).subscribe(({ unreadCount, notifications }) => {
       const bellItemIndex = this.headerData.headerItems.findIndex((item) => item.icon === 'custom-icon-bell');
@@ -339,5 +344,10 @@ export class ShellLayoutComponent implements OnInit {
     const minute = String(date.getMinutes()).padStart(2, '0');
     const second = String(date.getSeconds()).padStart(2, '0');
     return `${day}/${month}/${year} ${hour}:${minute}:${second}`;
+  }
+
+  handleNotificationFilterChange(filter: 'all' | 'unread'): void {
+    this.notificationFilter = filter;
+    this.loadNotifications(filter);
   }
 }

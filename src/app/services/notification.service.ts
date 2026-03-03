@@ -11,9 +11,14 @@ import { InAppNotificationResponse } from '../models/notification.model';
 export class NotificationService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  getMyNotifications(page: number = 0, size: number = 10): Observable<ResponseApi<InAppNotificationResponse[]>> {
+  getMyNotifications(
+    page: number = 0,
+    size: number = 10,
+    isRead?: boolean,
+  ): Observable<ResponseApi<InAppNotificationResponse[]>> {
+    const isReadParam = isRead === undefined ? '' : `&isRead=${isRead}`;
     return this.httpClient.get<ResponseApi<InAppNotificationResponse[]>>(
-      `${getBaseUrl()}/noti/me?page=${page}&size=${size}`,
+      `${getBaseUrl()}/noti/me?page=${page}&size=${size}${isReadParam}`,
     );
   }
 
@@ -29,4 +34,3 @@ export class NotificationService {
     return this.httpClient.put<ResponseApi<boolean>>(`${getBaseUrl()}/noti/read-all`, {});
   }
 }
-
