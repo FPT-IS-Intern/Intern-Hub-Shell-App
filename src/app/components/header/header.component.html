@@ -5,25 +5,117 @@
 
   <div class="header-right">
     @for (item of data.headerItems; track $index) {
-      <button class="header-btn" type="button" (click)="handleActionClick(item, $event)">
-        @if (typeof item.icon === 'string') {
-          <span
-            class="header-btn-icon"
-            [class]="item.icon"
-            [style.color]="item.colorIcon || 'var(--brand-700)'"
-            [style.width]="item.width || '20px'"
-            [style.height]="item.height || '20px'"
-          ></span>
-        } @else {
-          <app-icon
-            [iconData]="getIconData(item.icon, item.colorIcon, item.width, item.height)"
-          ></app-icon>
-        }
+      <div class="header-action">
+        <button class="header-btn" type="button" (click)="handleActionClick(item, $event, $index)">
+          @if (typeof item.icon === 'string') {
+            <span
+              class="header-btn-icon"
+              [class]="item.icon"
+              [style.color]="item.colorIcon || 'var(--brand-700)'"
+              [style.width]="item.width || '20px'"
+              [style.height]="item.height || '20px'"
+            ></span>
+          } @else {
+            <app-icon
+              [iconData]="getIconData(item.icon, item.colorIcon, item.width, item.height)"
+            ></app-icon>
+          }
 
-        @if (item.badge) {
-          <span class="badge">{{ item.badge }}</span>
+          @if (item.badge) {
+            <span class="badge">{{ item.badge }}</span>
+          }
+        </button>
+
+        @if (item.dropdownItems && openDropdownIndex === $index) {
+          <div class="header-dropdown">
+            @if (item.dropdownType === 'notification') {
+              <div class="header-dropdown-toolbar">
+                <div class="header-dropdown-tabs">
+                  <button
+                    class="header-dropdown-tab"
+                    type="button"
+                    [class.active]="notificationFilter === 'all'"
+                    (click)="setNotificationFilter('all', $event)"
+                  >
+                    Tất cả
+                  </button>
+                  <button
+                    class="header-dropdown-tab"
+                    type="button"
+                    [class.active]="notificationFilter === 'unread'"
+                    (click)="setNotificationFilter('unread', $event)"
+                  >
+                    Chưa đọc
+                  </button>
+                </div>
+                <button class="header-dropdown-view-all" type="button" (click)="handleViewAll(item, $event)">
+                  Xem tất cả
+                </button>
+              </div>
+            }
+
+            @if (getDisplayedDropdownItems(item).length === 0) {
+              <div class="header-dropdown-empty">Chưa có thông báo</div>
+            } @else {
+              @if (item.dropdownType === 'notification') {
+                <div class="header-dropdown-scroll">
+                  @for (group of getNotificationGroups(item); track group.label) {
+                    <div class="header-dropdown-group-label">{{ group.label }}</div>
+
+                    @for (dropdownItem of group.items; track $index) {
+                      <button
+                        class="header-dropdown-item"
+                        type="button"
+                        (click)="handleDropdownItemClick(dropdownItem, $event)"
+                      >
+                        <div class="header-dropdown-item-main">
+                          @if (dropdownItem.time) {
+                            <span class="header-dropdown-time-line">{{ dropdownItem.time }}</span>
+                          }
+                          <span class="header-dropdown-title">{{ dropdownItem.title }}</span>
+                        </div>
+
+                        <div class="header-dropdown-meta">
+                          @if (!dropdownItem.unread) {
+                            <span class="header-dropdown-read">Đã xem</span>
+                          }
+                          @if (dropdownItem.unread) {
+                            <span class="header-dropdown-dot"></span>
+                          }
+                        </div>
+                      </button>
+                    }
+                  }
+                </div>
+              } @else {
+                @for (dropdownItem of getDisplayedDropdownItems(item); track $index) {
+                  <button
+                    class="header-dropdown-item"
+                    type="button"
+                    (click)="handleDropdownItemClick(dropdownItem, $event)"
+                  >
+                    <div class="header-dropdown-item-main">
+                      <span class="header-dropdown-title">{{ dropdownItem.title }}</span>
+                      @if (dropdownItem.description) {
+                        <span class="header-dropdown-description">{{ dropdownItem.description }}</span>
+                      }
+                    </div>
+
+                    <div class="header-dropdown-meta">
+                      @if (dropdownItem.time) {
+                        <span class="header-dropdown-time">{{ dropdownItem.time }}</span>
+                      }
+                      @if (dropdownItem.unread) {
+                        <span class="header-dropdown-dot"></span>
+                      }
+                    </div>
+                  </button>
+                }
+              }
+            }
+          </div>
         }
-      </button>
+      </div>
     }
 
     <app-user-menu [data]="data.userMenuData"></app-user-menu>

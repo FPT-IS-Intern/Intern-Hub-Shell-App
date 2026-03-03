@@ -9,6 +9,9 @@ import { AuthService } from '../../services/auth.service';
 import { StorageUtil } from '@goat-bravos/shared-lib-client';
 import { UserService } from '../../services/user.service';
 import { SIDEBAR_ICONS } from '../../core/sidebar-icons';
+import { NotificationService } from '../../services/notification.service';
+import { InAppNotificationResponse } from '../../models/notification.model';
+import { catchError, forkJoin, of } from 'rxjs';
 
 @Component({
   selector: 'app-shell-layout',
@@ -20,6 +23,7 @@ import { SIDEBAR_ICONS } from '../../core/sidebar-icons';
 export class ShellLayoutComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
+  private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
 
   // Mobile sidebar state
@@ -45,7 +49,10 @@ export class ShellLayoutComponent implements OnInit {
         colorIcon: 'var(--brand-700)',
         width: '20px',
         height: '20px',
-        method: () => this.handleComingSoon('Thông báo'),
+        dropdownType: 'notification',
+        viewAllMethod: () => this.handleNotificationViewAll(),
+        badge: '0',
+        dropdownItems: [],
       },
       {
         icon: 'custom-icon-mail',
@@ -183,6 +190,7 @@ export class ShellLayoutComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCurrentUser();
+    this.loadNotifications();
   }
 
   private loadCurrentUser(): void {
@@ -210,6 +218,25 @@ export class ShellLayoutComponent implements OnInit {
 
   handleComingSoon(feature: string): void {
     void feature;
+  }
+
+  handleNotificationClick(notification: InAppNotificationResponse): void {
+    if (notification.isRead) {
+      return;
+    }
+
+    this.notificationService.markOneAsRead(notification.id).subscribe({
+      next: () => {
+        this.loadNotifications();
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Failed to mark notification as read:', err);
+      },
+    });
+  }
+
+  handleNotificationViewAll(): void {
+    // TODO: Open full notification center when route/module is available.
   }
 
   handleSettings(): void {
@@ -254,5 +281,56 @@ export class ShellLayoutComponent implements OnInit {
 
   closeMobileSidebar(): void {
     this.isMobileSidebarOpen = false;
+  }
+
+  private loadNotifications(): void {
+    forkJoin({
+      unreadCount: this.notificationService.getUnreadCount().pipe(catchError(() => of({ data: 0 }))),
+      notifications: this.notificationService
+        .getMyNotifications(0, 10)
+        .pipe(catchError(() => of({ data: [] as InAppNotificationResponse[] }))),
+    }).subscribe(({ unreadCount, notifications }) => {
+      const bellItemIndex = this.headerData.headerItems.findIndex((item) => item.icon === 'custom-icon-bell');
+      if (bellItemIndex < 0) {
+        return;
+      }
+
+      const list = [...(notifications.data ?? [])].sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
+      const mappedItems = list.map((item) => ({
+        title: item.title,
+        description: item.content,
+        time: this.formatNotificationTime(item.createdAt),
+        unread: !item.isRead,
+        createdAt: item.createdAt,
+        method: () => this.handleNotificationClick(item),
+      }));
+
+      const nextHeaderItems = [...this.headerData.headerItems];
+      nextHeaderItems[bellItemIndex] = {
+        ...nextHeaderItems[bellItemIndex],
+        badge: String(unreadCount.data ?? 0),
+        dropdownItems: mappedItems,
+      };
+
+      this.headerData = {
+        ...this.headerData,
+        headerItems: nextHeaderItems,
+      };
+    });
+  }
+
+  private formatNotificationTime(createdAt?: number): string {
+    if (!createdAt) {
+      return '';
+    }
+
+    const date = new Date(createdAt);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hour = String(date.getHours()).padStart(2, '0');
+    const minute = String(date.getMinutes()).padStart(2, '0');
+    const second = String(date.getSeconds()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hour}:${minute}:${second}`;
   }
 }

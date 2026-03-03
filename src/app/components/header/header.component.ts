@@ -1,7 +1,16 @@
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IconComponent, IconData } from '@goat-bravos/intern-hub-layout';
 import { UserMenuComponent, UserMenuData } from '../user-menu/user-menu.component';
+
+export interface HeaderDropdownItem {
+  title: string;
+  description?: string;
+  time?: string;
+  unread?: boolean;
+  createdAt?: number;
+  method?: () => void;
+}
 
 export interface HeaderAction {
   icon: IconData | string;
@@ -12,6 +21,9 @@ export interface HeaderAction {
   width?: string;
   height?: string;
   url?: string;
+  dropdownType?: 'default' | 'notification';
+  viewAllMethod?: () => void;
+  dropdownItems?: HeaderDropdownItem[];
 }
 
 export interface HeaderData {
@@ -28,6 +40,8 @@ export interface HeaderData {
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
+  private readonly elementRef = inject(ElementRef);
+
   @Input() data: HeaderData = {
     headerItems: [],
     logo: 'assets/FPT-IS-Logo.png',
@@ -40,12 +54,98 @@ export class HeaderComponent {
   };
 
   @Input() paddingHeader: string = '12px 20px 12px 16px';
+  openDropdownIndex: number | null = null;
+  notificationFilter: 'all' | 'unread' = 'all';
 
-  handleActionClick(item: HeaderAction, event: Event): void {
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.openDropdownIndex = null;
+    }
+  }
+
+  handleActionClick(item: HeaderAction, event: Event, index: number): void {
+    if (item.dropdownItems) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.openDropdownIndex = this.openDropdownIndex === index ? null : index;
+      this.notificationFilter = 'all';
+      return;
+    }
+
     if (item.method) {
       event.preventDefault();
       item.method();
     }
+  }
+
+  handleDropdownItemClick(dropdownItem: HeaderDropdownItem, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    dropdownItem.method?.();
+    this.openDropdownIndex = null;
+  }
+
+  setNotificationFilter(filter: 'all' | 'unread', event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.notificationFilter = filter;
+  }
+
+  handleViewAll(item: HeaderAction, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    item.viewAllMethod?.();
+    this.openDropdownIndex = null;
+  }
+
+  getDisplayedDropdownItems(item: HeaderAction): HeaderDropdownItem[] {
+    const items = item.dropdownItems ?? [];
+    if (item.dropdownType !== 'notification') {
+      return items;
+    }
+
+    if (this.notificationFilter === 'unread') {
+      return items.filter((i) => !!i.unread);
+    }
+
+    return items;
+  }
+
+  getNotificationGroups(item: HeaderAction): Array<{ label: string; items: HeaderDropdownItem[] }> {
+    const displayedItems = this.getDisplayedDropdownItems(item);
+    const groupMap = new Map<string, HeaderDropdownItem[]>();
+
+    displayedItems.forEach((dropdownItem) => {
+      const label = this.getNotificationGroupLabel(dropdownItem.createdAt);
+      const current = groupMap.get(label) ?? [];
+      current.push(dropdownItem);
+      groupMap.set(label, current);
+    });
+
+    return Array.from(groupMap.entries()).map(([label, items]) => ({ label, items }));
+  }
+
+  private getNotificationGroupLabel(createdAt?: number): string {
+    if (!createdAt) {
+      return 'KHÁC';
+    }
+
+    const createdDate = new Date(createdAt);
+    const now = new Date();
+    const isToday =
+      createdDate.getDate() === now.getDate() &&
+      createdDate.getMonth() === now.getMonth() &&
+      createdDate.getFullYear() === now.getFullYear();
+
+    if (isToday) {
+      return 'HÔM NAY';
+    }
+
+    const day = String(createdDate.getDate()).padStart(2, '0');
+    const month = String(createdDate.getMonth() + 1).padStart(2, '0');
+    const year = createdDate.getFullYear();
+    return `${day}/${month}/${year}`;
   }
 
   getIconData(
