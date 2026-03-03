@@ -96,7 +96,6 @@ export class HeaderComponent {
     event.preventDefault();
     event.stopPropagation();
     item.viewAllMethod?.();
-    this.openDropdownIndex = null;
   }
 
   getDisplayedDropdownItems(item: HeaderAction): HeaderDropdownItem[] {
