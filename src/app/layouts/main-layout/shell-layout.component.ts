@@ -221,7 +221,7 @@ export class ShellLayoutComponent implements OnInit {
   }
 
   handleNotificationClick(notification: InAppNotificationResponse): void {
-    if (notification.isRead) {
+    if (notification.read) {
       return;
     }
 
@@ -236,7 +236,14 @@ export class ShellLayoutComponent implements OnInit {
   }
 
   handleNotificationViewAll(): void {
-    // TODO: Open full notification center when route/module is available.
+    this.notificationService.markAllAsRead().subscribe({
+      next: () => {
+        this.loadNotifications();
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Failed to mark all notifications as read:', err);
+      },
+    });
   }
 
   handleSettings(): void {
@@ -300,7 +307,7 @@ export class ShellLayoutComponent implements OnInit {
         title: item.title,
         description: item.content,
         time: this.formatNotificationTime(item.createdAt),
-        unread: !item.isRead,
+        unread: !item.read,
         createdAt: item.createdAt,
         method: () => this.handleNotificationClick(item),
       }));

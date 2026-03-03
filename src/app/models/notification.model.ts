@@ -8,7 +8,6 @@ export interface InAppNotificationResponse {
   content: string;
   type: string;
   actionData?: NotificationActionData;
-  isRead: boolean;
+  read: boolean;
   createdAt: number;
 }
-

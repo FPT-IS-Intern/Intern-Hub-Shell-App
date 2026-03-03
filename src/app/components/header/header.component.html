@@ -21,7 +21,7 @@
             ></app-icon>
           }
 
-          @if (item.badge) {
+          @if (item.badge && item.badge !== '0') {
             <span class="badge">{{ item.badge }}</span>
           }
         </button>
