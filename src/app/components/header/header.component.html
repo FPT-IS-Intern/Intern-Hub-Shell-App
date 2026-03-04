@@ -62,33 +62,40 @@
               </div>
             } @else {
               @if (item.dropdownType === 'notification') {
-                <div class="header-dropdown-scroll">
-                  @for (group of getNotificationGroups(item); track group.label) {
-                    <div class="header-dropdown-group-label">{{ group.label }}</div>
+                <div class="header-dropdown-scroll-wrap">
+                  <div class="header-dropdown-scroll" #notificationScroll (scroll)="onNotificationScroll(notificationScroll)">
+                    @for (group of getNotificationGroups(item); track group.label) {
+                      <div class="header-dropdown-group-label">{{ group.label }}</div>
 
-                    @for (dropdownItem of group.items; track $index) {
-                      <button
-                        class="header-dropdown-item"
-                        type="button"
-                        (click)="handleDropdownItemClick(dropdownItem, $event)"
-                      >
-                        <div class="header-dropdown-item-main">
-                          @if (dropdownItem.time) {
-                            <span class="header-dropdown-time-line">{{ dropdownItem.time }}</span>
-                          }
-                          <span class="header-dropdown-title">{{ dropdownItem.title }}</span>
-                        </div>
+                      @for (dropdownItem of group.items; track $index) {
+                        <button
+                          class="header-dropdown-item"
+                          type="button"
+                          (click)="handleDropdownItemClick(dropdownItem, $event)"
+                        >
+                          <div class="header-dropdown-item-main">
+                            @if (dropdownItem.time) {
+                              <span class="header-dropdown-time-line">{{ dropdownItem.time }}</span>
+                            }
+                            <span class="header-dropdown-title">{{ dropdownItem.title }}</span>
+                          </div>
 
-                        <div class="header-dropdown-meta">
-                          @if (!dropdownItem.unread) {
-                            <span class="header-dropdown-read">Đã xem</span>
-                          }
-                          @if (dropdownItem.unread) {
-                            <span class="header-dropdown-dot"></span>
-                          }
-                        </div>
-                      </button>
+                          <div class="header-dropdown-meta">
+                            @if (!dropdownItem.unread) {
+                              <span class="header-dropdown-read">Đã xem</span>
+                            }
+                            @if (dropdownItem.unread) {
+                              <span class="header-dropdown-dot"></span>
+                            }
+                          </div>
+                        </button>
+                      }
                     }
+                  </div>
+                  @if (notificationScrollbarVisible) {
+                    <div class="header-dropdown-scrollbar">
+                      <span class="header-dropdown-scrollbar-thumb" [style.transform]="'translateY(' + notificationScrollbarThumbTop + 'px)'"></span>
+                    </div>
                   }
                 </div>
               } @else {

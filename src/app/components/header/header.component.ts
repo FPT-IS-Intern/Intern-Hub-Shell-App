@@ -42,6 +42,7 @@ export interface HeaderData {
 })
 export class HeaderComponent {
   private readonly elementRef = inject(ElementRef);
+  private readonly notificationScrollbarThumbHeight = 44;
 
   @Input() data: HeaderData = {
     headerItems: [],
@@ -57,6 +58,8 @@ export class HeaderComponent {
   @Input() paddingHeader: string = '12px 20px 12px 16px';
   openDropdownIndex: number | null = null;
   notificationFilter: 'all' | 'unread' = 'all';
+  notificationScrollbarVisible = false;
+  notificationScrollbarThumbTop = 0;
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
@@ -65,12 +68,18 @@ export class HeaderComponent {
     }
   }
 
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this.scheduleNotificationScrollbarUpdate();
+  }
+
   handleActionClick(item: HeaderAction, event: Event, index: number): void {
     if (item.dropdownItems) {
       event.preventDefault();
       event.stopPropagation();
       this.openDropdownIndex = this.openDropdownIndex === index ? null : index;
       this.notificationFilter = 'all';
+      this.scheduleNotificationScrollbarUpdate();
       return;
     }
 
@@ -92,6 +101,7 @@ export class HeaderComponent {
     event.stopPropagation();
     this.notificationFilter = filter;
     item.notificationFilterChanged?.(filter);
+    this.scheduleNotificationScrollbarUpdate();
   }
 
   handleViewAll(item: HeaderAction, event: Event): void {
@@ -125,6 +135,37 @@ export class HeaderComponent {
     });
 
     return Array.from(groupMap.entries()).map(([label, items]) => ({ label, items }));
+  }
+
+  onNotificationScroll(scrollElement: HTMLElement): void {
+    this.updateNotificationScrollbar(scrollElement);
+  }
+
+  private scheduleNotificationScrollbarUpdate(): void {
+    setTimeout(() => {
+      const scrollElement = this.elementRef.nativeElement.querySelector('.header-dropdown-scroll') as HTMLElement | null;
+      if (!scrollElement) {
+        this.notificationScrollbarVisible = false;
+        this.notificationScrollbarThumbTop = 0;
+        return;
+      }
+      this.updateNotificationScrollbar(scrollElement);
+    }, 0);
+  }
+
+  private updateNotificationScrollbar(scrollElement: HTMLElement): void {
+    const scrollableHeight = scrollElement.scrollHeight - scrollElement.clientHeight;
+    this.notificationScrollbarVisible = scrollableHeight > 0;
+
+    if (!this.notificationScrollbarVisible) {
+      this.notificationScrollbarThumbTop = 0;
+      return;
+    }
+
+    const trackHeight = scrollElement.clientHeight;
+    const maxThumbTop = Math.max(0, trackHeight - this.notificationScrollbarThumbHeight);
+    const scrollProgress = scrollableHeight > 0 ? scrollElement.scrollTop / scrollableHeight : 0;
+    this.notificationScrollbarThumbTop = Math.round(maxThumbTop * scrollProgress);
   }
 
   private getNotificationGroupLabel(createdAt?: number): string {
