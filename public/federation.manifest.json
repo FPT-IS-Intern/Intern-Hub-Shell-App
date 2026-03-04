@@ -1,7 +1,6 @@
 {
   "auth": "https://internhub-v2.bbtech.io.vn/mfe/auth/remoteEntry.json",
   "scheduler": "https://internhub-v2.bbtech.io.vn/mfe/scheduler/remoteEntry.json",
-  "notification": "https://internhub-v2.bbtech.io.vn/mfe/notification/remoteEntry.json",
   "lms": "https://internhub-v2.bbtech.io.vn/mfe/lms/remoteEntry.json",
   "hrm": "https://internhub-v2.bbtech.io.vn/mfe/hrm/remoteEntry.json",
   "boPortal": "https://internhub-v2.bbtech.io.vn/mfe/boPortal/remoteEntry.json",
