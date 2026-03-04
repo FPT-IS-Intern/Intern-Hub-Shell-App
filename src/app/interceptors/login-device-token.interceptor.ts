@@ -24,7 +24,8 @@ function getOrCreateDeviceId(): string {
 }
 
 export const loginDeviceTokenInterceptor: HttpInterceptorFn = (req, next) => {
-  if (!req.url.includes('/auth/login')) {
+  const isAuthSessionRequest = req.url.includes('/auth/login') || req.url.includes('/auth/logout');
+  if (!isAuthSessionRequest) {
     return next(req);
   }
 
