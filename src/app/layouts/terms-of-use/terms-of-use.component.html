@@ -1,0 +1,95 @@
+<div class="terms-page">
+  <div class="terms-container">
+    <!-- Header -->
+    <div class="terms-header">
+      <div class="terms-header-badge">
+        <app-icon icon="dsi-book-open-01-line" colorIcon="var(--neutral-color-10)" width="14px" height="14px"></app-icon>
+        <span class="badge-text">Điều khoản</span>
+      </div>
+      <h1 class="terms-title">Điều khoản sử dụng</h1>
+      <p class="terms-subtitle">
+        Vui lòng đọc kỹ các điều khoản trước khi sử dụng Nền tảng FPT Intern Hub
+      </p>
+      <div class="terms-meta">
+        <span class="meta-item">
+          <app-icon icon="dsi-calendar-line" colorIcon="var(--neutral-color-10)" width="14px" height="14px"></app-icon>
+          Cập nhật lần cuối: {{ lastUpdated }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="terms-content">
+      @for (section of sections; track section.title) {
+        <div class="terms-section">
+          <h2 class="section-title">{{ section.title }}</h2>
+
+          @if (section.content) {
+            <p class="section-text">{{ section.content }}</p>
+          }
+
+          @if (section.definitions) {
+            <div class="definitions-grid">
+              @for (def of section.definitions; track def.term) {
+                <div class="definition-card">
+                  <span class="definition-term">{{ def.term }}</span>
+                  <span class="definition-meaning">{{ def.meaning }}</span>
+                </div>
+              }
+            </div>
+          }
+
+          @if (section.items) {
+            <ul class="section-list">@for (item of section.items; track item) {<li class="section-list-item">
+                  <span class="list-bullet"></span>
+                  <span>{{ item }}</span>
+                </li>}</ul>
+          }
+
+          @if (section.subSections) {
+            @for (sub of section.subSections; track sub.title) {
+              <div class="sub-section">
+                <h3 class="sub-section-title">{{ sub.title }}</h3>
+                <ul class="section-list">@for (item of sub.items; track item) {<li class="section-list-item">
+                      <span class="list-bullet"></span>
+                      <span>{{ item }}</span>
+                    </li>}</ul>
+              </div>
+            }
+          }
+
+          @if (section.contactInfo) {
+            <div class="contact-card">
+              <div class="contact-item">
+                <span class="contact-label">Tổ chức:</span>
+                <span class="contact-value">{{ section.contactInfo.name }}</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Email:</span>
+                <a class="contact-link" [href]="'mailto:' + section.contactInfo.email">
+                  {{ section.contactInfo.email }}
+                </a>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Địa chỉ:</span>
+                <span class="contact-value">{{ section.contactInfo.address }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Footer -->
+    <div class="terms-footer">
+      <a routerLink="/" class="back-link">
+        <app-icon icon="dsi-arrow-left-line" colorIcon="var(--brand-600)" width="16px" height="16px"></app-icon>
+        Quay lại trang chủ
+      </a>
+      <a routerLink="/privacy-policy" class="footer-link">
+        Chính sách Bảo mật
+        <app-icon icon="dsi-arrow-right-line" colorIcon="var(--brand-600)" width="16px" height="16px"></app-icon>
+      </a>
+    </div>
+  </div>
+</div>

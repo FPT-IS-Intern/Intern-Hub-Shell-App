@@ -1,0 +1,111 @@
+<div class="policy-page">
+  <div class="policy-container">
+    <!-- Header -->
+    <div class="policy-header">
+      <div class="policy-header-badge">
+        <app-icon icon="dsi-folder-lock-line" colorIcon="#ffffff" width="14px" height="14px"></app-icon>
+        <span class="badge-text">Bảo mật</span>
+      </div>
+      <h1 class="policy-title">Chính sách Bảo mật</h1>
+      <p class="policy-subtitle">
+        Chúng tôi cam kết bảo vệ quyền riêng tư và thông tin cá nhân của bạn
+      </p>
+      <div class="policy-meta">
+        <span class="meta-item">
+          <app-icon icon="dsi-calendar-line" colorIcon="#ffffff" width="14px" height="14px"></app-icon>
+          Cập nhật lần cuối: {{ lastUpdated }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="policy-content">
+      @for (section of sections; track section.title) {
+        <div class="policy-section">
+          <h2 class="section-title">{{ section.title }}</h2>
+
+          @if (section.content) {
+            <p class="section-text">{{ section.content }}</p>
+          }
+
+          @if (section.items) {
+            <ul class="section-list">@for (item of section.items; track item) {<li class="section-list-item">
+                  <span class="list-bullet"></span>
+                  <span>{{ item }}</span>
+                </li>}</ul>
+          }
+
+          @if (section.isPermissionSection) {
+            <div class="permissions-grid">
+              @for (perm of permissions; track perm.name) {
+                <div class="permission-card">
+                  <div class="permission-header">
+                    <div class="permission-icon-wrapper">
+                      <app-icon [icon]="perm.icon" colorIcon="var(--brand-600)" width="24px" height="24px"></app-icon>
+                    </div>
+                    <div class="permission-title-group">
+                      <span class="permission-name">{{ perm.name }}</span>
+                      <span class="permission-desc">{{ perm.description }}</span>
+                    </div>
+                  </div>
+                  <p class="permission-purpose">{{ perm.purpose }}</p>
+                </div>
+              }
+            </div>
+            <div class="permission-note">
+              <app-icon icon="dsi-folder-lock-line" colorIcon="var(--brand-600)" width="18px" height="18px"></app-icon>
+              <span>Tất cả dữ liệu thu thập qua các quyền trên đều được mã hóa và bảo vệ theo tiêu chuẩn bảo mật cao nhất.</span>
+            </div>
+            <div class="permission-note">
+              <app-icon icon="dsi-book-open-01-line" colorIcon="var(--brand-600)" width="18px" height="18px"></app-icon>
+              <span>Bạn có thể xem lại và thu hồi các quyền đã cấp bất kỳ lúc nào trong phần Cài đặt thiết bị.</span>
+            </div>
+          }
+
+          @if (section.subSections) {
+            @for (sub of section.subSections; track sub.title) {
+              <div class="sub-section">
+                <h3 class="sub-section-title">{{ sub.title }}</h3>
+                <ul class="section-list">@for (item of sub.items; track item) {<li class="section-list-item">
+                      <span class="list-bullet"></span>
+                      <span>{{ item }}</span>
+                    </li>}</ul>
+              </div>
+            }
+          }
+
+          @if (section.contactInfo) {
+            <div class="contact-card">
+              <div class="contact-item">
+                <span class="contact-label">Tổ chức:</span>
+                <span class="contact-value">{{ section.contactInfo.name }}</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Email:</span>
+                <a class="contact-link" [href]="'mailto:' + section.contactInfo.email">
+                  {{ section.contactInfo.email }}
+                </a>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Địa chỉ:</span>
+                <span class="contact-value">{{ section.contactInfo.address }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Footer -->
+    <div class="policy-footer">
+      <a routerLink="/auth" class="back-link">
+        <app-icon icon="dsi-arrow-left-line" colorIcon="var(--brand-600)" width="16px" height="16px"></app-icon>
+        Quay lại trang chủ
+      </a>
+      <a routerLink="/terms-of-use" class="footer-link">
+        Điều khoản sử dụng
+        <app-icon icon="dsi-arrow-right-line" colorIcon="var(--brand-600)" width="16px" height="16px"></app-icon>
+      </a>
+    </div>
+  </div>
+</div>

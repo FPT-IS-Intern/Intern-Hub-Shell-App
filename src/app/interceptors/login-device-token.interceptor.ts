@@ -6,7 +6,7 @@ function getDeviceToken(): string | null {
 
   for (const key of keys) {
     const value = localStorage.getItem(key);
-    if (value && value.trim()) {
+    if (value?.trim()) {
       return value.trim();
     }
   }

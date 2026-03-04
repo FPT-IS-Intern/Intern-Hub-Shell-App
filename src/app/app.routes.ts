@@ -3,7 +3,9 @@ import { safeLoadRemoteRoutes } from './utils/safe-load-remote';
 import { errorRoutes } from './guards/error.routes';
 import { ShellLayoutComponent } from './layouts/main-layout/shell-layout.component';
 import { Error404LayoutComponent } from './layouts/error-404/error-404.component';
-import { authGuard, createAuthGuard, createNoAuthGuard } from '@goat-bravos/shared-lib-client';
+import { PrivacyPolicyComponent } from './layouts/privacy-policy/privacy-policy.component';
+import { TermsOfUseComponent } from './layouts/terms-of-use/terms-of-use.component';
+import { createAuthGuard, createNoAuthGuard } from '@goat-bravos/shared-lib-client';
 
 export const routes: Routes = [
   {
@@ -15,6 +17,16 @@ export const routes: Routes = [
     path: 'auth',
     loadChildren: safeLoadRemoteRoutes('auth'),
     canActivate: [createNoAuthGuard('/homePage')],
+  },
+  {
+    path: 'privacy-policy',
+    component: PrivacyPolicyComponent,
+    title: 'Chính sách Bảo mật - FPT Intern Hub',
+  },
+  {
+    path: 'terms-of-use',
+    component: TermsOfUseComponent,
+    title: 'Điều khoản sử dụng - FPT Intern Hub',
   },
   {
     path: '',
