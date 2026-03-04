@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
-import { getMessaging, getToken, Messaging } from 'firebase/messaging';
+import { getMessaging, getToken, Messaging, MessagePayload, onMessage } from 'firebase/messaging';
 import { environment } from '../../environments/environment';
 
 type FirebaseConfig = {
@@ -58,9 +58,36 @@ export class PushTokenService {
       if (token) {
         localStorage.setItem('deviceToken', token);
       }
+
+      // Foreground handling: browser does not auto-popup when tab is active.
+      onMessage(this.messaging, (payload: MessagePayload) => {
+        this.showBrowserNotification(payload);
+      });
     } catch {
       // Ignore push token init errors to avoid affecting app startup flow.
     }
+  }
+
+  private showBrowserNotification(payload: MessagePayload): void {
+    if (typeof window === 'undefined' || Notification.permission !== 'granted') {
+      return;
+    }
+
+    const title = payload.notification?.title ?? payload.data?.['title'] ?? 'Intern Hub';
+    const body = payload.notification?.body ?? payload.data?.['body'] ?? '';
+    const image = payload.notification?.image ?? payload.data?.['imageUrl'];
+
+    const options: NotificationOptions & { image?: string } = {
+      body,
+      data: payload.data ?? {},
+    };
+
+    if (image) {
+      options.image = image;
+      options.icon = image;
+    }
+
+    new Notification(title, options);
   }
 
   private async ensureNotificationPermission(): Promise<NotificationPermission> {
@@ -90,4 +117,3 @@ export class PushTokenService {
     return key.trim();
   }
 }
-
