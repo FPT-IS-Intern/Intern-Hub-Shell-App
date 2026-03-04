@@ -22,18 +22,15 @@ export class PushTokenService {
 
   async initializeDeviceToken(): Promise<void> {
     if (this.initialized) {
-      console.info('[FCM] Skip init: already initialized');
       return;
     }
     this.initialized = true;
 
     if (typeof window === 'undefined' || typeof Notification === 'undefined') {
-      console.warn('[FCM] Notification API is not available');
       return;
     }
 
     if (!('serviceWorker' in navigator)) {
-      console.warn('[FCM] Service Worker is not supported');
       return;
     }
 
@@ -41,12 +38,10 @@ export class PushTokenService {
     const vapidKey = this.getVapidKey();
 
     if (!config || !vapidKey) {
-      console.warn('[FCM] Missing firebase config or vapid key');
       return;
     }
 
     const permission = await this.ensureNotificationPermission();
-    console.info('[FCM] Notification permission:', permission);
     if (permission !== 'granted') {
       return;
     }
@@ -55,8 +50,6 @@ export class PushTokenService {
       const app = initializeApp(config);
       this.messaging = getMessaging(app);
       const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-      console.info('[FCM] Service worker registered:', registration.scope);
-
       const token = await getToken(this.messaging, {
         vapidKey,
         serviceWorkerRegistration: registration,
@@ -64,12 +57,9 @@ export class PushTokenService {
 
       if (token) {
         localStorage.setItem('deviceToken', token);
-        console.info('[FCM] Device token saved', `${token.slice(0, 16)}...`);
-      } else {
-        console.warn('[FCM] getToken returned empty token');
       }
-    } catch (error) {
-      console.error('Failed to initialize FCM device token:', error);
+    } catch {
+      // Ignore push token init errors to avoid affecting app startup flow.
     }
   }
 
@@ -100,3 +90,4 @@ export class PushTokenService {
     return key.trim();
   }
 }
+

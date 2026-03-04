@@ -29,21 +29,17 @@ export const loginDeviceTokenInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  console.info('[LoginInterceptor] /auth/login detected');
   let headers = req.headers;
 
   if (!headers.has('X-Device-ID')) {
     headers = headers.set('X-Device-ID', getOrCreateDeviceId());
-    console.info('[LoginInterceptor] X-Device-ID attached');
   }
 
   const deviceToken = getDeviceToken();
   if (deviceToken && !headers.has('X-Device-Token')) {
     headers = headers.set('X-Device-Token', deviceToken);
-    console.info('[LoginInterceptor] X-Device-Token attached');
-  } else if (!deviceToken) {
-    console.warn('[LoginInterceptor] Missing deviceToken in localStorage');
   }
 
   return next(req.clone({ headers }));
 };
+
