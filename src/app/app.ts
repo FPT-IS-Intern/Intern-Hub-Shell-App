@@ -3,6 +3,7 @@ import { DynamicDsService } from 'dynamic-ds';
 import { RouterOutlet, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
+import { PushTokenService } from './services/push-token.service';
 import {
   StorageUtil,
   cancelTokenRefresh,
@@ -19,12 +20,14 @@ export class App implements OnInit, OnDestroy {
   private readonly themeService = inject(DynamicDsService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
+  private readonly pushTokenService = inject(PushTokenService);
 
   private readonly onAuthTokenExpired = this.handleAuthTokenExpired.bind(this);
   private readonly onForceLogout = this.handleForceLogout.bind(this);
 
   ngOnInit(): void {
     this.themeService.initializeTheme().subscribe();
+    void this.pushTokenService.initializeDeviceToken();
 
     window.addEventListener('AUTH_TOKEN_EXPIRED', this.onAuthTokenExpired);
     window.addEventListener('FORCE_LOGOUT', this.onForceLogout);

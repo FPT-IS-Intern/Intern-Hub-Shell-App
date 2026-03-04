@@ -36,6 +36,7 @@
     "@softarc/native-federation-node": "3.3.4",
     "dynamic-ds": "1.0.12",
     "es-module-shims": "^1.5.12",
+    "firebase": "^11.10.0",
     "ng-zorro-antd": "^21.1.0",
     "oxc-parser": "^0.110.0",
     "rxjs": "~7.8.0",

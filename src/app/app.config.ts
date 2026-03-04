@@ -12,6 +12,7 @@ import { authInterceptor, configureAuthInterceptor } from '@goat-bravos/shared-l
 import { SYSTEM_DESIGN_CONFIG } from 'dynamic-ds';
 import { NZ_I18N, vi_VN } from 'ng-zorro-antd/i18n';
 import localeVi from '@angular/common/locales/vi';
+import { loginDeviceTokenInterceptor } from './interceptors/login-device-token.interceptor';
 
 import { routes } from './app.routes';
 
@@ -40,7 +41,12 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor as unknown as HttpInterceptorFn])),
+    provideHttpClient(
+      withInterceptors([
+        loginDeviceTokenInterceptor,
+        authInterceptor as unknown as HttpInterceptorFn,
+      ]),
+    ),
     provideAnimationsAsync(),
     { provide: NZ_I18N, useValue: vi_VN },
     { provide: LOCALE_ID, useValue: 'vi' },

@@ -5,6 +5,8 @@ import { environment } from './environments/environment';
 const appEnv = {
   apiUrl: environment.apiUrl,
   storageFileBaseUrl: (environment as any).storageFileBaseUrl,
+  firebase: (environment as any).firebase,
+  firebaseVapidKey: (environment as any).firebaseVapidKey,
 };
 
 (globalThis as any).__env = appEnv;
