@@ -17,6 +17,8 @@ type FirebaseConfig = {
   providedIn: 'root',
 })
 export class PushTokenService {
+  private readonly appName = 'Intern Hub';
+  private readonly defaultIcon = '/favicon.ico';
   private messaging: Messaging | null = null;
   private initialized = false;
 
@@ -73,13 +75,26 @@ export class PushTokenService {
       return;
     }
 
-    const title = payload.notification?.title ?? payload.data?.['title'] ?? 'Intern Hub';
-    const body = payload.notification?.body ?? payload.data?.['body'] ?? '';
-    const image = payload.notification?.image ?? payload.data?.['imageUrl'];
+    const title = this.truncate(
+      this.toText(payload.notification?.title) ||
+        this.toText(payload.data?.['title']) ||
+        this.toText(payload.data?.['subject']) ||
+        this.appName,
+      60,
+    );
+    const body = this.truncate(
+      this.toText(payload.notification?.body) ||
+        this.toText(payload.data?.['body']) ||
+        this.toText(payload.data?.['content']),
+      140,
+    );
+    const image = this.toText(payload.notification?.image) || this.toText(payload.data?.['imageUrl']);
 
     const options: NotificationOptions & { image?: string } = {
       body,
       data: payload.data ?? {},
+      icon: image || this.defaultIcon,
+      badge: this.defaultIcon,
     };
 
     if (image) {
@@ -88,6 +103,18 @@ export class PushTokenService {
     }
 
     new Notification(title, options);
+  }
+
+  private toText(value: string | undefined): string {
+    return (value ?? '').trim();
+  }
+
+  private truncate(value: string, maxLength: number): string {
+    if (!value) {
+      return '';
+    }
+
+    return value.length > maxLength ? `${value.slice(0, maxLength - 1)}…` : value;
   }
 
   private async ensureNotificationPermission(): Promise<NotificationPermission> {

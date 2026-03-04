@@ -13,6 +13,45 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
+const APP_NAME = 'Intern Hub';
+const DEFAULT_ICON = '/favicon.ico';
+
+function toText(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function truncate(value, maxLength) {
+  if (!value) return '';
+  return value.length > maxLength ? `${value.slice(0, maxLength - 1)}…` : value;
+}
+
+function buildNotificationContent(payload) {
+  const data = payload?.data || {};
+  const title = truncate(
+    toText(payload?.notification?.title) || toText(data.title) || toText(data.subject) || APP_NAME,
+    60,
+  );
+  const body = truncate(
+    toText(payload?.notification?.body) || toText(data.body) || toText(data.content) || '',
+    140,
+  );
+  const image = toText(payload?.notification?.image) || toText(data.imageUrl);
+  const notificationId = toText(data.id) || toText(data.notificationId);
+  const deeplink = toText(data.deeplink) || toText(data.url) || '/';
+
+  return {
+    title,
+    options: {
+      body,
+      data: { ...data, deeplink },
+      icon: image || DEFAULT_ICON,
+      badge: DEFAULT_ICON,
+      image: image || undefined,
+      tag: notificationId || undefined,
+      renotify: false,
+    },
+  };
+}
 
 self.addEventListener('install', () => {
   self.skipWaiting();
@@ -23,17 +62,7 @@ self.addEventListener('activate', (event) => {
 });
 
 messaging.onBackgroundMessage((payload) => {
-  const title = payload?.notification?.title || payload?.data?.title || 'Intern Hub';
-  const body = payload?.notification?.body || payload?.data?.body || '';
-  const image = payload?.notification?.image || payload?.data?.imageUrl;
-
-  const options = {
-    body,
-    data: payload?.data || {},
-    icon: image || '/favicon.ico',
-    image: image || undefined,
-  };
-
+  const { title, options } = buildNotificationContent(payload);
   self.registration.showNotification(title, options);
 });
 
