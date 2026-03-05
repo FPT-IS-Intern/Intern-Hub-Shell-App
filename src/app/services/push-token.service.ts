@@ -19,6 +19,13 @@ type PushContent = {
   image?: string;
   deeplink: string;
   data: Record<string, string>;
+  silent: boolean;
+  dedupeKey: string;
+  tag?: string;
+  badgeCount?: number;
+  nativeNotification: boolean;
+  ttlSeconds?: number;
+  sound?: string;
 };
 
 @Injectable({
@@ -30,6 +37,8 @@ export class PushTokenService {
   private messaging: Messaging | null = null;
   private initialized = false;
   private swMessageBound = false;
+  private readonly dedupeTtlMs = 5 * 60 * 1000;
+  private readonly seenDedupeMap = new Map<string, number>();
 
   async initializeDeviceToken(): Promise<void> {
     if (this.initialized) {
@@ -77,8 +86,18 @@ export class PushTokenService {
 
       onMessage(this.messaging, (payload: MessagePayload) => {
         const content = this.extractPushContent(payload);
+        if (content.silent || this.isDuplicate(content.dedupeKey)) {
+          return;
+        }
+
+        this.updateAppBadge(content.badgeCount);
+
         if (document.visibilityState === 'visible') {
           this.emitInAppNotification(content);
+          return;
+        }
+
+        if (content.nativeNotification) {
           return;
         }
 
@@ -96,9 +115,10 @@ export class PushTokenService {
 
     const options: NotificationOptions & { image?: string } = {
       body: content.body,
-      data: content.data,
+      data: { ...content.data, deeplink: content.deeplink },
       icon: content.image || this.defaultIcon,
       badge: this.defaultIcon,
+      tag: content.tag,
     };
 
     if (content.image) {
@@ -141,7 +161,19 @@ export class PushTokenService {
       const message = event.data as
         | {
             type?: string;
-            payload?: { title?: string; body?: string; image?: string; deeplink?: string };
+            payload?: {
+              title?: string;
+              body?: string;
+              image?: string;
+              deeplink?: string;
+              silent?: string | boolean;
+              dedupeKey?: string;
+              tag?: string;
+              badgeCount?: string | number;
+              nativeNotification?: string | boolean;
+              ttlSeconds?: string | number;
+              sound?: string;
+            };
           }
         | undefined;
 
@@ -149,13 +181,30 @@ export class PushTokenService {
         return;
       }
 
-      this.emitInAppNotification({
+      const content: PushContent = {
         title: this.toText(message.payload.title) || this.appName,
         body: this.toText(message.payload.body),
         image: this.toText(message.payload.image) || undefined,
         deeplink: this.toText(message.payload.deeplink) || '/',
         data: {},
-      });
+        silent: this.parseBooleanInput(message.payload.silent),
+        dedupeKey: this.toText(message.payload.dedupeKey),
+        tag: this.toText(message.payload.tag) || undefined,
+        badgeCount: this.parseNumberInput(message.payload.badgeCount),
+        nativeNotification: this.parseBooleanInput(message.payload.nativeNotification),
+        ttlSeconds: this.parseNumberInput(message.payload.ttlSeconds),
+        sound: this.toText(message.payload.sound) || undefined,
+      };
+      if (content.silent) {
+        return;
+      }
+      this.updateAppBadge(content.badgeCount);
+      const dedupeKey = content.dedupeKey || `sw:${content.title}:${content.body}`;
+      if (this.isDuplicate(dedupeKey)) {
+        return;
+      }
+
+      this.emitInAppNotification(content);
     });
 
     this.swMessageBound = true;
@@ -177,7 +226,23 @@ export class PushTokenService {
       140,
     );
     const image = this.toText(payload.notification?.image) || this.toText(data['imageUrl']);
-    const deeplink = this.toText(data['deeplink']) || this.toText(data['url']) || '/';
+    const deeplink =
+      this.toText(data['clickAction']) ||
+      this.toText((payload as MessagePayload & { fcmOptions?: { link?: string } }).fcmOptions?.link) ||
+      this.toText(data['deeplink']) ||
+      this.toText(data['url']) ||
+      '/';
+    const dedupeKey =
+      this.toText(data['dedupeKey']) ||
+      this.toText(data['notificationId']) ||
+      this.toText(data['id']) ||
+      `${title}:${body}`;
+    const tag = this.toText(data['tag']) || this.toText(data['collapseKey']) || undefined;
+    const silent = this.parseBoolean(data['silent']);
+    const badgeCount = this.parseNumber(data['badgeCount']);
+    const nativeNotification = this.parseBoolean(data['nativeNotification']);
+    const ttlSeconds = this.parseNumber(data['ttlSeconds']);
+    const sound = this.toText(data['sound']) || undefined;
 
     return {
       title,
@@ -185,6 +250,13 @@ export class PushTokenService {
       image: image || undefined,
       deeplink,
       data,
+      silent,
+      dedupeKey,
+      tag,
+      badgeCount,
+      nativeNotification,
+      ttlSeconds,
+      sound,
     };
   }
 
@@ -198,6 +270,81 @@ export class PushTokenService {
     }
 
     return value.length > maxLength ? `${value.slice(0, maxLength - 1)}...` : value;
+  }
+
+  private parseBoolean(value: string | undefined): boolean {
+    return (value ?? '').trim().toLowerCase() === 'true';
+  }
+
+  private parseBooleanInput(value: string | boolean | undefined): boolean {
+    if (typeof value === 'boolean') {
+      return value;
+    }
+
+    return this.parseBoolean(value);
+  }
+
+  private parseNumber(value: string | undefined): number | undefined {
+    const normalized = (value ?? '').trim();
+    if (!normalized) {
+      return undefined;
+    }
+    const parsed = Number(normalized);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  }
+
+  private parseNumberInput(value: string | number | undefined): number | undefined {
+    if (typeof value === 'number') {
+      return Number.isFinite(value) ? value : undefined;
+    }
+
+    return this.parseNumber(value);
+  }
+
+  private updateAppBadge(badgeCount: number | undefined): void {
+    if (typeof navigator === 'undefined') {
+      return;
+    }
+
+    const navWithBadge = navigator as Navigator & {
+      setAppBadge?: (contents?: number) => Promise<void>;
+      clearAppBadge?: () => Promise<void>;
+    };
+
+    if (!Number.isFinite(badgeCount) || badgeCount === undefined || badgeCount < 0) {
+      return;
+    }
+
+    if (badgeCount === 0 && typeof navWithBadge.clearAppBadge === 'function') {
+      void navWithBadge.clearAppBadge();
+      return;
+    }
+
+    if (typeof navWithBadge.setAppBadge === 'function') {
+      void navWithBadge.setAppBadge(Math.trunc(badgeCount));
+    }
+  }
+
+  private isDuplicate(dedupeKey: string | undefined): boolean {
+    const key = (dedupeKey ?? '').trim();
+    if (!key) {
+      return false;
+    }
+
+    const now = Date.now();
+    for (const [mapKey, expiresAt] of this.seenDedupeMap.entries()) {
+      if (expiresAt <= now) {
+        this.seenDedupeMap.delete(mapKey);
+      }
+    }
+
+    const expiresAt = this.seenDedupeMap.get(key);
+    if (expiresAt && expiresAt > now) {
+      return true;
+    }
+
+    this.seenDedupeMap.set(key, now + this.dedupeTtlMs);
+    return false;
   }
 
   private async ensureNotificationPermission(): Promise<NotificationPermission> {
