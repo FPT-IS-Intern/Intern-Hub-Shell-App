@@ -24,8 +24,6 @@ type PushContent = {
   tag?: string;
   badgeCount?: number;
   nativeNotification: boolean;
-  ttlSeconds?: number;
-  sound?: string;
 };
 
 @Injectable({
@@ -171,8 +169,6 @@ export class PushTokenService {
               tag?: string;
               badgeCount?: string | number;
               nativeNotification?: string | boolean;
-              ttlSeconds?: string | number;
-              sound?: string;
             };
           }
         | undefined;
@@ -192,8 +188,6 @@ export class PushTokenService {
         tag: this.toText(message.payload.tag) || undefined,
         badgeCount: this.parseNumberInput(message.payload.badgeCount),
         nativeNotification: this.parseBooleanInput(message.payload.nativeNotification),
-        ttlSeconds: this.parseNumberInput(message.payload.ttlSeconds),
-        sound: this.toText(message.payload.sound) || undefined,
       };
       if (content.silent) {
         return;
@@ -227,10 +221,8 @@ export class PushTokenService {
     );
     const image = this.toText(payload.notification?.image) || this.toText(data['imageUrl']);
     const deeplink =
-      this.toText(data['clickAction']) ||
+      this.toText(data['targetUrl']) ||
       this.toText((payload as MessagePayload & { fcmOptions?: { link?: string } }).fcmOptions?.link) ||
-      this.toText(data['deeplink']) ||
-      this.toText(data['url']) ||
       '/';
     const dedupeKey =
       this.toText(data['dedupeKey']) ||
@@ -241,8 +233,6 @@ export class PushTokenService {
     const silent = this.parseBoolean(data['silent']);
     const badgeCount = this.parseNumber(data['badgeCount']);
     const nativeNotification = this.parseBoolean(data['nativeNotification']);
-    const ttlSeconds = this.parseNumber(data['ttlSeconds']);
-    const sound = this.toText(data['sound']) || undefined;
 
     return {
       title,
@@ -255,8 +245,6 @@ export class PushTokenService {
       tag,
       badgeCount,
       nativeNotification,
-      ttlSeconds,
-      sound,
     };
   }
 

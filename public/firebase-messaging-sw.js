@@ -40,18 +40,14 @@ function buildNotificationContent(payload) {
   const image = toText(payload?.notification?.image) || toText(data.imageUrl);
   const notificationId = toText(data.id) || toText(data.notificationId);
   const deeplink =
-    toText(data.clickAction) ||
+    toText(data.targetUrl) ||
     toText(payload?.fcmOptions?.link) ||
-    toText(data.deeplink) ||
-    toText(data.url) ||
     '/';
   const dedupeKey = toText(data.dedupeKey) || notificationId || `${title}:${body}`;
   const tag = toText(data.tag) || toText(data.collapseKey) || notificationId;
   const silent = toText(data.silent).toLowerCase() === 'true';
   const badgeCount = Number(toText(data.badgeCount));
   const nativeNotification = toText(data.nativeNotification).toLowerCase() === 'true';
-  const ttlSeconds = Number(toText(data.ttlSeconds));
-  const sound = toText(data.sound);
 
   return {
     title,
@@ -63,8 +59,6 @@ function buildNotificationContent(payload) {
     silent,
     badgeCount: Number.isFinite(badgeCount) ? badgeCount : undefined,
     nativeNotification,
-    ttlSeconds: Number.isFinite(ttlSeconds) ? ttlSeconds : undefined,
-    sound: sound || undefined,
     options: {
       body,
       data: { ...data, deeplink },
@@ -127,8 +121,6 @@ messaging.onBackgroundMessage((payload) => {
             tag: content.tag,
             badgeCount: content.badgeCount,
             nativeNotification: content.nativeNotification,
-            ttlSeconds: content.ttlSeconds,
-            sound: content.sound,
           },
         });
         return;

@@ -353,42 +353,25 @@ export class ShellLayoutComponent implements OnInit {
 
   private handleNotificationAction(actionData: InAppNotificationResponse['actionData']): void {
     const payload = this.normalizeActionData(actionData);
-    if (!payload || !payload['action']) {
+    if (!payload) {
       return;
     }
 
-    const action = String(payload['action']).toLowerCase();
+    const targetUrl = typeof payload['targetUrl'] === 'string' ? payload['targetUrl'].trim() : '';
+    if (targetUrl) {
+      this.navigateByActionTarget(targetUrl);
+    }
+  }
 
-    if (action === 'open_url') {
-      const url = typeof payload['url'] === 'string' ? payload['url'] : '';
-      if (!url) return;
-
-      if (/^https?:\/\//i.test(url)) {
-        window.open(url, '_blank', 'noopener,noreferrer');
-      } else {
-        this.router.navigateByUrl(url);
-      }
+  private navigateByActionTarget(target: string): void {
+    if (!target) {
       return;
     }
-
-    if (action === 'open') {
-      const route = this.mapScreenToRoute(payload);
-      if (route) {
-        this.router.navigateByUrl(route);
-      }
+    if (/^https?:\/\//i.test(target)) {
+      window.location.href = target;
       return;
     }
-
-    if (action === 'viewed') {
-      return;
-    }
-
-    if (action === 'view_report') {
-      const reportId = typeof payload['id'] === 'string' ? payload['id'] : '';
-      if (reportId) {
-        this.router.navigateByUrl(`/view_report/${reportId}`);
-      }
-    }
+    this.router.navigateByUrl(target);
   }
 
   private normalizeActionData(
@@ -408,20 +391,5 @@ export class ShellLayoutComponent implements OnInit {
     }
 
     return actionData as Record<string, unknown>;
-  }
-
-  private mapScreenToRoute(payload: Record<string, unknown>): string | null {
-    const screen = typeof payload['screen'] === 'string' ? payload['screen'] : '';
-    const taskId = typeof payload['task_id'] === 'string' ? payload['task_id'] : '';
-
-    if (!screen) {
-      return null;
-    }
-
-    if (screen === 'task_detail') {
-      return taskId ? `/task_detail/${taskId}` : '/task_detail';
-    }
-
-    return `/${screen}`;
   }
 }
