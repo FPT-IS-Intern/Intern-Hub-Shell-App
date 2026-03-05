@@ -48,6 +48,9 @@ function buildNotificationContent(payload) {
   const silent = toText(data.silent).toLowerCase() === 'true';
   const badgeCount = Number(toText(data.badgeCount));
   const nativeNotification = toText(data.nativeNotification).toLowerCase() === 'true';
+  const hasNativeDisplayPayload = Boolean(
+    toText(payload?.notification?.title) || toText(payload?.notification?.body),
+  );
 
   return {
     title,
@@ -59,6 +62,7 @@ function buildNotificationContent(payload) {
     silent,
     badgeCount: Number.isFinite(badgeCount) ? badgeCount : undefined,
     nativeNotification,
+    hasNativeDisplayPayload,
     options: {
       body,
       data: { ...data, deeplink },
@@ -126,7 +130,7 @@ messaging.onBackgroundMessage((payload) => {
         return;
       }
 
-      if (content.nativeNotification) {
+      if (content.nativeNotification && content.hasNativeDisplayPayload) {
         return;
       }
 

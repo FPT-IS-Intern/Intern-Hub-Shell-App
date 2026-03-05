@@ -18,6 +18,7 @@ import {
   styleUrls: ['./app.scss'],
 })
 export class App implements OnInit, OnDestroy {
+  private readonly inAppToastDurationMs = 10000;
   private readonly themeService = inject(DynamicDsService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
@@ -123,6 +124,6 @@ export class App implements OnInit, OnDestroy {
     this.toastTimeoutId = setTimeout(() => {
       this.inAppNotification = null;
       this.toastTimeoutId = null;
-    }, 6000);
+    }, this.inAppToastDurationMs);
   }
 }
