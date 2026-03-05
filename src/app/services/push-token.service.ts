@@ -92,14 +92,14 @@ export class PushTokenService {
           return;
         }
 
-        this.showBrowserNotification(content);
+        void this.showBrowserNotification(content);
       });
     } catch {
       // Ignore push token init errors to avoid affecting app startup flow.
     }
   }
 
-  private showBrowserNotification(content: PushContent): void {
+  private async showBrowserNotification(content: PushContent): Promise<void> {
     if (typeof window === 'undefined' || Notification.permission !== 'granted') {
       return;
     }
@@ -115,6 +115,16 @@ export class PushTokenService {
     if (content.image) {
       options.image = content.image;
       options.icon = content.image;
+    }
+
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        await registration.showNotification(content.title, options);
+        return;
+      } catch {
+        // Fall back to Notification API when service worker path is unavailable.
+      }
     }
 
     const notification = new Notification(content.title, options);
