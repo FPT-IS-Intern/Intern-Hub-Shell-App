@@ -24,6 +24,7 @@ export interface HeaderAction {
   dropdownType?: 'default' | 'notification';
   viewAllMethod?: () => void;
   notificationFilterChanged?: (filter: 'all' | 'unread') => void;
+  notificationLoadMore?: () => void;
   dropdownItems?: HeaderDropdownItem[];
 }
 
@@ -137,8 +138,12 @@ export class HeaderComponent {
     return Array.from(groupMap.entries()).map(([label, items]) => ({ label, items }));
   }
 
-  onNotificationScroll(scrollElement: HTMLElement): void {
+  onNotificationScroll(scrollElement: HTMLElement, item: HeaderAction): void {
     this.updateNotificationScrollbar(scrollElement);
+    const remaining = scrollElement.scrollHeight - scrollElement.clientHeight - scrollElement.scrollTop;
+    if (item.dropdownType === 'notification' && remaining <= 24) {
+      item.notificationLoadMore?.();
+    }
   }
 
   private scheduleNotificationScrollbarUpdate(): void {

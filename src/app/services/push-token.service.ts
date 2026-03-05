@@ -17,10 +17,9 @@ type PushContent = {
   title: string;
   body: string;
   image?: string;
-  deeplink: string;
+  targetUrl: string;
   data: Record<string, string>;
   silent: boolean;
-  dedupeKey: string;
   tag?: string;
   badgeCount?: number;
   nativeNotification: boolean;
@@ -36,8 +35,6 @@ export class PushTokenService {
   private messaging: Messaging | null = null;
   private initialized = false;
   private swMessageBound = false;
-  private readonly dedupeTtlMs = 5 * 60 * 1000;
-  private readonly seenDedupeMap = new Map<string, number>();
 
   async initializeDeviceToken(): Promise<void> {
     if (this.initialized) {
@@ -85,7 +82,7 @@ export class PushTokenService {
 
       onMessage(this.messaging, (payload: MessagePayload) => {
         const content = this.extractPushContent(payload);
-        if (content.silent || this.isDuplicate(content.dedupeKey)) {
+        if (content.silent) {
           return;
         }
 
@@ -114,7 +111,7 @@ export class PushTokenService {
 
     const options: NotificationOptions & { image?: string } = {
       body: content.body,
-      data: { ...content.data, deeplink: content.deeplink },
+      data: { ...content.data, targetUrl: content.targetUrl },
       icon: content.image || this.defaultIcon,
       badge: this.defaultIcon,
       tag: content.tag,
@@ -127,8 +124,8 @@ export class PushTokenService {
 
     const notification = new Notification(content.title, options);
     notification.onclick = () => {
-      if (content.deeplink) {
-        window.open(content.deeplink, '_self');
+      if (content.targetUrl) {
+        window.open(content.targetUrl, '_self');
       }
       notification.close();
     };
@@ -145,7 +142,7 @@ export class PushTokenService {
           title: content.title,
           body: content.body,
           image: content.image,
-          deeplink: content.deeplink,
+          targetUrl: content.targetUrl,
         },
       }),
     );
@@ -164,9 +161,8 @@ export class PushTokenService {
               title?: string;
               body?: string;
               image?: string;
-              deeplink?: string;
+              targetUrl?: string;
               silent?: string | boolean;
-              dedupeKey?: string;
               tag?: string;
               badgeCount?: string | number;
               nativeNotification?: string | boolean;
@@ -182,10 +178,9 @@ export class PushTokenService {
         title: this.toText(message.payload.title) || this.appName,
         body: this.toText(message.payload.body),
         image: this.toText(message.payload.image) || undefined,
-        deeplink: this.toText(message.payload.deeplink) || '/',
+        targetUrl: this.toText(message.payload.targetUrl) || '/',
         data: {},
         silent: this.parseBooleanInput(message.payload.silent),
-        dedupeKey: this.toText(message.payload.dedupeKey),
         tag: this.toText(message.payload.tag) || undefined,
         badgeCount: this.parseNumberInput(message.payload.badgeCount),
         nativeNotification: this.parseBooleanInput(message.payload.nativeNotification),
@@ -195,10 +190,6 @@ export class PushTokenService {
         return;
       }
       this.updateAppBadge(content.badgeCount);
-      const dedupeKey = content.dedupeKey || `sw:${content.title}:${content.body}`;
-      if (this.isDuplicate(dedupeKey)) {
-        return;
-      }
 
       this.emitInAppNotification(content);
     });
@@ -222,15 +213,7 @@ export class PushTokenService {
       140,
     );
     const image = this.toText(payload.notification?.image) || this.toText(data['imageUrl']);
-    const deeplink =
-      this.toText(data['targetUrl']) ||
-      this.toText((payload as MessagePayload & { fcmOptions?: { link?: string } }).fcmOptions?.link) ||
-      '/';
-    const dedupeKey =
-      this.toText(data['dedupeKey']) ||
-      this.toText(data['notificationId']) ||
-      this.toText(data['id']) ||
-      `${title}:${body}`;
+    const targetUrl = this.toText(data['targetUrl']) || '/';
     const tag = this.toText(data['tag']) || this.toText(data['collapseKey']) || undefined;
     const silent = this.parseBoolean(data['silent']);
     const badgeCount = this.parseNumber(data['badgeCount']);
@@ -243,10 +226,9 @@ export class PushTokenService {
       title,
       body,
       image: image || undefined,
-      deeplink,
+      targetUrl,
       data,
       silent,
-      dedupeKey,
       tag,
       badgeCount,
       nativeNotification,
@@ -317,28 +299,6 @@ export class PushTokenService {
     if (typeof navWithBadge.setAppBadge === 'function') {
       void navWithBadge.setAppBadge(Math.trunc(badgeCount));
     }
-  }
-
-  private isDuplicate(dedupeKey: string | undefined): boolean {
-    const key = (dedupeKey ?? '').trim();
-    if (!key) {
-      return false;
-    }
-
-    const now = Date.now();
-    for (const [mapKey, expiresAt] of this.seenDedupeMap.entries()) {
-      if (expiresAt <= now) {
-        this.seenDedupeMap.delete(mapKey);
-      }
-    }
-
-    const expiresAt = this.seenDedupeMap.get(key);
-    if (expiresAt && expiresAt > now) {
-      return true;
-    }
-
-    this.seenDedupeMap.set(key, now + this.dedupeTtlMs);
-    return false;
   }
 
   private async ensureNotificationPermission(): Promise<NotificationPermission> {

@@ -49,7 +49,7 @@
                   </button>
                 </div>
                 <button class="header-dropdown-view-all" type="button" (click)="handleViewAll(item, $event)">
-                  Xem tất cả
+                  Đọc hết
                 </button>
               </div>
             }
@@ -63,7 +63,7 @@
             } @else {
               @if (item.dropdownType === 'notification') {
                 <div class="header-dropdown-scroll-wrap">
-                  <div class="header-dropdown-scroll" #notificationScroll (scroll)="onNotificationScroll(notificationScroll)">
+                  <div class="header-dropdown-scroll" #notificationScroll (scroll)="onNotificationScroll(notificationScroll, item)">
                     @for (group of getNotificationGroups(item); track group.label) {
                       <div class="header-dropdown-group-label">{{ group.label }}</div>
 

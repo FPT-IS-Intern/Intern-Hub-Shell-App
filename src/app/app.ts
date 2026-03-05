@@ -29,7 +29,7 @@ export class App implements OnInit, OnDestroy {
   private readonly onInAppPushNotification = this.handleInAppPushNotification.bind(this);
   private toastTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  inAppNotification: { title: string; body: string; image?: string; deeplink: string } | null = null;
+  inAppNotification: { title: string; body: string; image?: string; targetUrl: string } | null = null;
 
   ngOnInit(): void {
     this.themeService.initializeTheme().subscribe();
@@ -86,11 +86,11 @@ export class App implements OnInit, OnDestroy {
       return;
     }
 
-    const deeplink = this.inAppNotification.deeplink;
-    if (deeplink.startsWith('http://') || deeplink.startsWith('https://')) {
-      window.location.href = deeplink;
+    const targetUrl = this.inAppNotification.targetUrl;
+    if (targetUrl.startsWith('http://') || targetUrl.startsWith('https://')) {
+      window.location.href = targetUrl;
     } else {
-      void this.router.navigateByUrl(deeplink);
+      void this.router.navigateByUrl(targetUrl);
     }
     this.closeToast();
   }
@@ -107,14 +107,14 @@ export class App implements OnInit, OnDestroy {
   }
 
   private handleInAppPushNotification(event: Event): void {
-    const customEvent = event as CustomEvent<{ title?: string; body?: string; image?: string; deeplink?: string }>;
+    const customEvent = event as CustomEvent<{ title?: string; body?: string; image?: string; targetUrl?: string }>;
     const detail = customEvent.detail ?? {};
 
     this.inAppNotification = {
       title: detail.title?.trim() || 'Intern Hub',
       body: detail.body?.trim() || '',
       image: detail.image?.trim() || undefined,
-      deeplink: detail.deeplink?.trim() || '/',
+      targetUrl: detail.targetUrl?.trim() || '/',
     };
 
     if (this.toastTimeoutId) {

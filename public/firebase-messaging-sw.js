@@ -15,8 +15,6 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 const APP_NAME = 'Intern Hub';
 const DEFAULT_ICON = '/favicon.ico';
-const DEDUPE_TTL_MS = 5 * 60 * 1000;
-const seenDedupeMap = new Map();
 
 function toText(value) {
   return typeof value === 'string' ? value.trim() : '';
@@ -39,11 +37,7 @@ function buildNotificationContent(payload) {
   );
   const image = toText(payload?.notification?.image) || toText(data.imageUrl);
   const notificationId = toText(data.id) || toText(data.notificationId);
-  const deeplink =
-    toText(data.targetUrl) ||
-    toText(payload?.fcmOptions?.link) ||
-    '/';
-  const dedupeKey = toText(data.dedupeKey) || notificationId || `${title}:${body}`;
+  const targetUrl = toText(data.targetUrl) || '/';
   const tag = toText(data.tag) || toText(data.collapseKey) || notificationId;
   const silent = toText(data.silent).toLowerCase() === 'true';
   const badgeCount = Number(toText(data.badgeCount));
@@ -56,8 +50,7 @@ function buildNotificationContent(payload) {
     title,
     body,
     image,
-    deeplink,
-    dedupeKey,
+    targetUrl,
     tag: tag || undefined,
     silent,
     badgeCount: Number.isFinite(badgeCount) ? badgeCount : undefined,
@@ -65,33 +58,14 @@ function buildNotificationContent(payload) {
     hasNativeDisplayPayload,
     options: {
       body,
-      data: { ...data, deeplink },
+      data: { ...data, targetUrl },
       icon: image || DEFAULT_ICON,
       badge: DEFAULT_ICON,
       image: image || undefined,
       tag: tag || undefined,
-      renotify: false,
+      renotify: true,
     },
   };
-}
-
-function isDuplicate(dedupeKey) {
-  if (!dedupeKey) return false;
-
-  const now = Date.now();
-  for (const [key, expiresAt] of seenDedupeMap.entries()) {
-    if (expiresAt <= now) {
-      seenDedupeMap.delete(key);
-    }
-  }
-
-  const expiresAt = seenDedupeMap.get(dedupeKey);
-  if (expiresAt && expiresAt > now) {
-    return true;
-  }
-
-  seenDedupeMap.set(dedupeKey, now + DEDUPE_TTL_MS);
-  return false;
 }
 
 self.addEventListener('install', () => {
@@ -104,7 +78,7 @@ self.addEventListener('activate', (event) => {
 
 messaging.onBackgroundMessage((payload) => {
   const content = buildNotificationContent(payload);
-  if (content.silent || isDuplicate(content.dedupeKey)) {
+  if (content.silent) {
     return;
   }
 
@@ -119,9 +93,8 @@ messaging.onBackgroundMessage((payload) => {
             title: content.title,
             body: content.body,
             image: content.image,
-            deeplink: content.deeplink,
+            targetUrl: content.targetUrl,
             silent: content.silent,
-            dedupeKey: content.dedupeKey,
             tag: content.tag,
             badgeCount: content.badgeCount,
             nativeNotification: content.nativeNotification,
@@ -140,7 +113,7 @@ messaging.onBackgroundMessage((payload) => {
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const deeplink = event?.notification?.data?.deeplink || '/';
+  const targetUrl = event?.notification?.data?.targetUrl || '/';
 
   event.waitUntil(
     clients
@@ -148,12 +121,12 @@ self.addEventListener('notificationclick', (event) => {
       .then((windowClients) => {
         for (const client of windowClients) {
           if ('focus' in client) {
-            client.navigate(deeplink);
+            client.navigate(targetUrl);
             return client.focus();
           }
         }
         if (clients.openWindow) {
-          return clients.openWindow(deeplink);
+          return clients.openWindow(targetUrl);
         }
       }),
   );

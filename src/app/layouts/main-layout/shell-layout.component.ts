@@ -26,6 +26,12 @@ export class ShellLayoutComponent implements OnInit {
   private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
   private notificationFilter: 'all' | 'unread' = 'all';
+  private notificationPage = 0;
+  private readonly notificationPageSize = 10;
+  private notificationHasMore = true;
+  private notificationLoading = false;
+  private currentNotificationItems: InAppNotificationResponse[] = [];
+  private currentUnreadCount = 0;
 
   // Mobile sidebar state
   isMobileSidebarOpen = false;
@@ -53,6 +59,7 @@ export class ShellLayoutComponent implements OnInit {
         dropdownType: 'notification',
         viewAllMethod: () => this.handleNotificationViewAll(),
         notificationFilterChanged: (filter) => this.handleNotificationFilterChange(filter),
+        notificationLoadMore: () => this.loadMoreNotifications(),
         badge: '0',
         dropdownItems: [],
       },
@@ -293,42 +300,85 @@ export class ShellLayoutComponent implements OnInit {
   }
 
   private loadNotifications(filter: 'all' | 'unread' = 'all'): void {
+    if (this.notificationLoading) {
+      return;
+    }
     this.notificationFilter = filter;
+    this.notificationPage = 0;
+    this.notificationHasMore = true;
+    this.currentNotificationItems = [];
     const isRead = filter === 'all' ? undefined : false;
+    this.notificationLoading = true;
 
     forkJoin({
       unreadCount: this.notificationService.getUnreadCount().pipe(catchError(() => of({ data: 0 }))),
       notifications: this.notificationService
-        .getMyNotifications(0, 10, isRead)
+        .getMyNotifications(this.notificationPage, this.notificationPageSize, isRead)
         .pipe(catchError(() => of({ data: [] as InAppNotificationResponse[] }))),
     }).subscribe(({ unreadCount, notifications }) => {
-      const bellItemIndex = this.headerData.headerItems.findIndex((item) => item.icon === 'custom-icon-bell');
-      if (bellItemIndex < 0) {
-        return;
-      }
-
-      const list = [...(notifications.data ?? [])].sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
-      const mappedItems = list.map((item) => ({
-        title: item.title,
-        description: item.content,
-        time: this.formatNotificationTime(item.createdAt),
-        unread: !item.read,
-        createdAt: item.createdAt,
-        method: () => this.handleNotificationClick(item),
-      }));
-
-      const nextHeaderItems = [...this.headerData.headerItems];
-      nextHeaderItems[bellItemIndex] = {
-        ...nextHeaderItems[bellItemIndex],
-        badge: String(unreadCount.data ?? 0),
-        dropdownItems: mappedItems,
-      };
-
-      this.headerData = {
-        ...this.headerData,
-        headerItems: nextHeaderItems,
-      };
+      const pageItems = notifications.data ?? [];
+      this.currentUnreadCount = unreadCount.data ?? 0;
+      this.currentNotificationItems = pageItems;
+      this.notificationHasMore = pageItems.length >= this.notificationPageSize;
+      this.applyNotificationsToHeader();
+      this.notificationLoading = false;
     });
+  }
+
+  private loadMoreNotifications(): void {
+    if (this.notificationLoading || !this.notificationHasMore) {
+      return;
+    }
+
+    this.notificationLoading = true;
+    const nextPage = this.notificationPage + 1;
+    const isRead = this.notificationFilter === 'all' ? undefined : false;
+    this.notificationService
+      .getMyNotifications(nextPage, this.notificationPageSize, isRead)
+      .pipe(catchError(() => of({ data: [] as InAppNotificationResponse[] })))
+      .subscribe((notifications) => {
+        const pageItems = notifications.data ?? [];
+        if (pageItems.length === 0) {
+          this.notificationHasMore = false;
+          this.notificationLoading = false;
+          return;
+        }
+
+        this.notificationPage = nextPage;
+        this.notificationHasMore = pageItems.length >= this.notificationPageSize;
+        this.currentNotificationItems = [...this.currentNotificationItems, ...pageItems];
+        this.applyNotificationsToHeader();
+        this.notificationLoading = false;
+      });
+  }
+
+  private applyNotificationsToHeader(): void {
+    const bellItemIndex = this.headerData.headerItems.findIndex((item) => item.icon === 'custom-icon-bell');
+    if (bellItemIndex < 0) {
+      return;
+    }
+
+    const list = [...this.currentNotificationItems].sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
+    const mappedItems = list.map((item) => ({
+      title: item.title,
+      description: item.content,
+      time: this.formatNotificationTime(item.createdAt),
+      unread: !item.read,
+      createdAt: item.createdAt,
+      method: () => this.handleNotificationClick(item),
+    }));
+
+    const nextHeaderItems = [...this.headerData.headerItems];
+    nextHeaderItems[bellItemIndex] = {
+      ...nextHeaderItems[bellItemIndex],
+      badge: String(this.currentUnreadCount),
+      dropdownItems: mappedItems,
+    };
+
+    this.headerData = {
+      ...this.headerData,
+      headerItems: nextHeaderItems,
+    };
   }
 
   private formatNotificationTime(createdAt?: number): string {
