@@ -15,6 +15,7 @@ import {
   standalone: true,
   imports: [RouterOutlet, CommonModule],
   templateUrl: './app.html',
+  styleUrls: ['./app.scss'],
 })
 export class App implements OnInit, OnDestroy {
   private readonly themeService = inject(DynamicDsService);
@@ -24,6 +25,10 @@ export class App implements OnInit, OnDestroy {
 
   private readonly onAuthTokenExpired = this.handleAuthTokenExpired.bind(this);
   private readonly onForceLogout = this.handleForceLogout.bind(this);
+  private readonly onInAppPushNotification = this.handleInAppPushNotification.bind(this);
+  private toastTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  inAppNotification: { title: string; body: string; image?: string; deeplink: string } | null = null;
 
   ngOnInit(): void {
     this.themeService.initializeTheme().subscribe();
@@ -31,11 +36,16 @@ export class App implements OnInit, OnDestroy {
 
     window.addEventListener('AUTH_TOKEN_EXPIRED', this.onAuthTokenExpired);
     window.addEventListener('FORCE_LOGOUT', this.onForceLogout);
+    window.addEventListener('IN_APP_PUSH_NOTIFICATION', this.onInAppPushNotification as EventListener);
   }
 
   ngOnDestroy(): void {
     window.removeEventListener('AUTH_TOKEN_EXPIRED', this.onAuthTokenExpired);
     window.removeEventListener('FORCE_LOGOUT', this.onForceLogout);
+    window.removeEventListener('IN_APP_PUSH_NOTIFICATION', this.onInAppPushNotification as EventListener);
+    if (this.toastTimeoutId) {
+      clearTimeout(this.toastTimeoutId);
+    }
   }
 
   private handleAuthTokenExpired(): void {
@@ -68,5 +78,51 @@ export class App implements OnInit, OnDestroy {
     cancelTokenRefresh();
     StorageUtil.clearAll();
     this.router.navigate(['/auth']);
+  }
+
+  handleToastClick(): void {
+    if (!this.inAppNotification) {
+      return;
+    }
+
+    const deeplink = this.inAppNotification.deeplink;
+    if (deeplink.startsWith('http://') || deeplink.startsWith('https://')) {
+      window.location.href = deeplink;
+    } else {
+      void this.router.navigateByUrl(deeplink);
+    }
+    this.closeToast();
+  }
+
+  closeToast(event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.inAppNotification = null;
+    if (this.toastTimeoutId) {
+      clearTimeout(this.toastTimeoutId);
+      this.toastTimeoutId = null;
+    }
+  }
+
+  private handleInAppPushNotification(event: Event): void {
+    const customEvent = event as CustomEvent<{ title?: string; body?: string; image?: string; deeplink?: string }>;
+    const detail = customEvent.detail ?? {};
+
+    this.inAppNotification = {
+      title: detail.title?.trim() || 'Intern Hub',
+      body: detail.body?.trim() || '',
+      image: detail.image?.trim() || undefined,
+      deeplink: detail.deeplink?.trim() || '/',
+    };
+
+    if (this.toastTimeoutId) {
+      clearTimeout(this.toastTimeoutId);
+    }
+
+    this.toastTimeoutId = setTimeout(() => {
+      this.inAppNotification = null;
+      this.toastTimeoutId = null;
+    }, 6000);
   }
 }

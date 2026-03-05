@@ -1,1 +1,18 @@
 <router-outlet></router-outlet>
+
+@if (inAppNotification) {
+  <div class="in-app-toast" role="button" tabindex="0" (click)="handleToastClick()">
+    @if (inAppNotification.image) {
+      <img class="in-app-toast-image" [src]="inAppNotification.image" alt="Notification image" />
+    }
+    <div class="in-app-toast-content">
+      <div class="in-app-toast-title">{{ inAppNotification.title }}</div>
+      @if (inAppNotification.body) {
+        <div class="in-app-toast-body">{{ inAppNotification.body }}</div>
+      }
+    </div>
+    <button class="in-app-toast-close" type="button" (click)="closeToast($event)" aria-label="Close notification">
+      x
+    </button>
+  </div>
+}
