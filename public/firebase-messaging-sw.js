@@ -63,7 +63,26 @@ self.addEventListener('activate', (event) => {
 
 messaging.onBackgroundMessage((payload) => {
   const { title, options } = buildNotificationContent(payload);
-  self.registration.showNotification(title, options);
+
+  return clients
+    .matchAll({ type: 'window', includeUncontrolled: true })
+    .then((windowClients) => {
+      const visibleClient = windowClients.find((client) => client.visibilityState === 'visible');
+      if (visibleClient) {
+        visibleClient.postMessage({
+          type: 'IN_APP_PUSH_NOTIFICATION',
+          payload: {
+            title,
+            body: options.body || '',
+            image: options.image,
+            deeplink: options?.data?.deeplink || '/',
+          },
+        });
+        return;
+      }
+
+      return self.registration.showNotification(title, options);
+    });
 });
 
 self.addEventListener('notificationclick', (event) => {

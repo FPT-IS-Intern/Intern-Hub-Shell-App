@@ -29,6 +29,7 @@ export class PushTokenService {
   private readonly defaultIcon = '/favicon.ico';
   private messaging: Messaging | null = null;
   private initialized = false;
+  private swMessageBound = false;
 
   async initializeDeviceToken(): Promise<void> {
     if (this.initialized) {
@@ -62,6 +63,7 @@ export class PushTokenService {
       const app = initializeApp(config);
       this.messaging = getMessaging(app);
       const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      this.bindServiceWorkerMessageListener();
       const token = await getToken(this.messaging, {
         vapidKey,
         serviceWorkerRegistration: registration,
@@ -75,8 +77,12 @@ export class PushTokenService {
 
       onMessage(this.messaging, (payload: MessagePayload) => {
         const content = this.extractPushContent(payload);
+        if (document.visibilityState === 'visible') {
+          this.emitInAppNotification(content);
+          return;
+        }
+
         this.showBrowserNotification(content);
-        this.emitInAppNotification(content);
       });
     } catch {
       // Ignore push token init errors to avoid affecting app startup flow.
@@ -124,6 +130,35 @@ export class PushTokenService {
         },
       }),
     );
+  }
+
+  private bindServiceWorkerMessageListener(): void {
+    if (this.swMessageBound || typeof window === 'undefined' || !('serviceWorker' in navigator)) {
+      return;
+    }
+
+    navigator.serviceWorker.addEventListener('message', (event: MessageEvent) => {
+      const message = event.data as
+        | {
+            type?: string;
+            payload?: { title?: string; body?: string; image?: string; deeplink?: string };
+          }
+        | undefined;
+
+      if (message?.type !== 'IN_APP_PUSH_NOTIFICATION' || !message.payload) {
+        return;
+      }
+
+      this.emitInAppNotification({
+        title: this.toText(message.payload.title) || this.appName,
+        body: this.toText(message.payload.body),
+        image: this.toText(message.payload.image) || undefined,
+        deeplink: this.toText(message.payload.deeplink) || '/',
+        data: {},
+      });
+    });
+
+    this.swMessageBound = true;
   }
 
   private extractPushContent(payload: MessagePayload): PushContent {
