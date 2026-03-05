@@ -23,7 +23,6 @@ type PushContent = {
   tag?: string;
   badgeCount?: number;
   nativeNotification: boolean;
-  hasNativeDisplayPayload: boolean;
 };
 
 @Injectable({
@@ -90,10 +89,6 @@ export class PushTokenService {
 
         if (document.visibilityState === 'visible') {
           this.emitInAppNotification(content);
-          return;
-        }
-
-        if (content.nativeNotification && content.hasNativeDisplayPayload) {
           return;
         }
 
@@ -184,7 +179,6 @@ export class PushTokenService {
         tag: this.toText(message.payload.tag) || undefined,
         badgeCount: this.parseNumberInput(message.payload.badgeCount),
         nativeNotification: this.parseBooleanInput(message.payload.nativeNotification),
-        hasNativeDisplayPayload: false,
       };
       if (content.silent) {
         return;
@@ -218,9 +212,6 @@ export class PushTokenService {
     const silent = this.parseBoolean(data['silent']);
     const badgeCount = this.parseNumber(data['badgeCount']);
     const nativeNotification = this.parseBoolean(data['nativeNotification']);
-    const hasNativeDisplayPayload = Boolean(
-      this.toText(payload.notification?.title) || this.toText(payload.notification?.body),
-    );
 
     return {
       title,
@@ -232,7 +223,6 @@ export class PushTokenService {
       tag,
       badgeCount,
       nativeNotification,
-      hasNativeDisplayPayload,
     };
   }
 
