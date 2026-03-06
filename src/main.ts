@@ -1,6 +1,7 @@
 import { initFederation } from '@angular-architects/native-federation';
 import { environment } from './environments/environment';
 
+// Trigger deploy
 // Khởi tạo cấu hình Runtime Cấp Toàn Cục (Global Runtime Config)
 const appEnv = {
   apiUrl: environment.apiUrl,
