@@ -93,12 +93,12 @@ export class ShellLayoutComponent implements OnInit {
           url: 'hrm/profile',
         },
         {
-          icon: 'dsi-face-id-line',
+          icon: 'dsi dsi-user-circle-line',
           content: 'Đăng ký khuôn mặt',
           method: () => this.handleOpenFaceRegistration(),
         },
         {
-          icon: 'dsi-settings-line',
+          icon: 'dsi dsi-settings-01-line',
           content: 'Cài đặt',
           method: () => this.handleSettings(),
         },
