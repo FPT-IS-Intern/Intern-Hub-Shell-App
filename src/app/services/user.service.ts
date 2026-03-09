@@ -9,6 +9,7 @@ export interface CurrentUser {
   avatarUrl?: string;
   email: string;
   role: string;
+  isFaceRegistry?: boolean;
 }
 
 @Injectable({

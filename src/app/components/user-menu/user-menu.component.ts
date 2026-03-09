@@ -9,6 +9,8 @@ export interface UserMenuAction {
   method?: () => void;
   colorIcon?: string;
   url?: string;
+  tooltip?: string;
+  disabled?: boolean;
 }
 
 export interface UserMenuData {
@@ -54,6 +56,11 @@ export class UserMenuComponent {
   }
 
   handleActionClick(item: UserMenuAction, event: Event): void {
+    if (item.disabled) {
+      event.preventDefault();
+      return;
+    }
+
     if (item.url) {
       event.preventDefault();
       const targetUrl = item.url.startsWith('/') ? item.url : `/${item.url}`;

@@ -129,13 +129,50 @@
     color: var(--neutral-color-700);
     font-size: 14px;
     font-weight: 600;
+    position: relative;
 
     app-icon {
       color: var(--neutral-color-400);
       transition: color 0.2s ease;
     }
 
-    &:hover {
+    .menu-tooltip {
+      display: none;
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 6px);
+      transform: translateX(-50%);
+      background: var(--neutral-color-800, #1f2937);
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 8px;
+      white-space: nowrap;
+      z-index: 10;
+      pointer-events: none;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid transparent;
+        border-top-color: var(--neutral-color-800, #1f2937);
+      }
+    }
+
+    &.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+
+      &:hover .menu-tooltip {
+        display: block;
+      }
+    }
+
+    &:hover:not(.disabled) {
       background-color: var(--brand-50);
       color: var(--brand-700);
 

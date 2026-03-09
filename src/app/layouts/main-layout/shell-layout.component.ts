@@ -4,6 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { RouterOutlet, Router } from '@angular/router';
 import { HeaderComponent, HeaderData } from '../../components/header/header.component';
 import { SidebarComponent, SidebarData } from '../../components/sidebar/sidebar.component';
+import { FaceRegistrationDialogComponent } from '../../components/face-registration-dialog/face-registration-dialog.component';
 import { IconData } from '@goat-bravos/intern-hub-layout';
 import { AuthService } from '../../services/auth.service';
 import { StorageUtil } from '@goat-bravos/shared-lib-client';
@@ -16,7 +17,7 @@ import { catchError, forkJoin, of } from 'rxjs';
 @Component({
   selector: 'app-shell-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent, FaceRegistrationDialogComponent],
   templateUrl: './shell-layout.component.html',
   styleUrls: ['./shell-layout.component.scss'],
 })
@@ -38,6 +39,11 @@ export class ShellLayoutComponent implements OnInit {
 
   // Desktop sidebar state
   isSidebarExpanded = false;
+
+  // Face registration state
+  showFaceRegistrationDialog = false;
+  faceRegistrationUserName = '';
+  private isFaceRegistered = false;
 
   headerData: HeaderData = {
     logo: 'https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg',
@@ -85,6 +91,11 @@ export class ShellLayoutComponent implements OnInit {
           icon: 'dsi-user-01-line',
           content: 'Thông tin cá nhân',
           url: 'hrm/profile',
+        },
+        {
+          icon: 'dsi-face-id-line',
+          content: 'Đăng ký khuôn mặt',
+          method: () => this.handleOpenFaceRegistration(),
         },
         {
           icon: 'dsi-settings-line',
@@ -209,6 +220,25 @@ export class ShellLayoutComponent implements OnInit {
           return;
         }
 
+        // Lấy phần trước @ trong email, lowercase
+        const email = response.data.email || '';
+        const atIndex = email.indexOf('@');
+        this.faceRegistrationUserName = (atIndex > 0 ? email.substring(0, atIndex) : email).toLowerCase();
+
+        // Cập nhật trạng thái đăng ký khuôn mặt
+        this.isFaceRegistered = response.data.isFaceRegistry === true;
+
+        // Cập nhật menu item đăng ký khuôn mặt
+        const updatedUserMenuItems = [...this.headerData.userMenuData.userMenuItems!];
+        const faceMenuIndex = updatedUserMenuItems.findIndex((item) => item.content === 'Đăng ký khuôn mặt');
+        if (faceMenuIndex >= 0) {
+          updatedUserMenuItems[faceMenuIndex] = {
+            ...updatedUserMenuItems[faceMenuIndex],
+            disabled: this.isFaceRegistered,
+            tooltip: this.isFaceRegistered ? 'Bạn đã đăng ký khuôn mặt rồi' : undefined,
+          };
+        }
+
         this.headerData = {
           ...this.headerData,
           userMenuData: {
@@ -216,6 +246,7 @@ export class ShellLayoutComponent implements OnInit {
             userName: response.data.fullName || this.headerData.userMenuData.userName,
             userEmail: response.data.email || this.headerData.userMenuData.userEmail,
             userRole: response.data.role || this.headerData.userMenuData.userRole,
+            userMenuItems: updatedUserMenuItems,
           },
         };
       },
@@ -257,6 +288,40 @@ export class ShellLayoutComponent implements OnInit {
 
   handleSettings(): void {
     // Placeholder until settings route is available.
+  }
+
+  handleOpenFaceRegistration(): void {
+    if (this.isFaceRegistered) {
+      return;
+    }
+    this.showFaceRegistrationDialog = true;
+  }
+
+  closeFaceRegistrationDialog(): void {
+    this.showFaceRegistrationDialog = false;
+  }
+
+  onFaceRegistered(): void {
+    this.isFaceRegistered = true;
+
+    // Cập nhật menu item
+    const updatedUserMenuItems = [...this.headerData.userMenuData.userMenuItems!];
+    const faceMenuIndex = updatedUserMenuItems.findIndex((item) => item.content === 'Đăng ký khuôn mặt');
+    if (faceMenuIndex >= 0) {
+      updatedUserMenuItems[faceMenuIndex] = {
+        ...updatedUserMenuItems[faceMenuIndex],
+        disabled: true,
+        tooltip: 'Bạn đã đăng ký khuôn mặt rồi',
+      };
+    }
+
+    this.headerData = {
+      ...this.headerData,
+      userMenuData: {
+        ...this.headerData.userMenuData,
+        userMenuItems: updatedUserMenuItems,
+      },
+    };
   }
 
   handleLogout(): void {

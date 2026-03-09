@@ -39,3 +39,11 @@
     </div>
   </div>
 </div>
+
+@if (showFaceRegistrationDialog) {
+  <app-face-registration-dialog
+    [userName]="faceRegistrationUserName"
+    (closed)="closeFaceRegistrationDialog()"
+    (registered)="onFaceRegistered()"
+  ></app-face-registration-dialog>
+}

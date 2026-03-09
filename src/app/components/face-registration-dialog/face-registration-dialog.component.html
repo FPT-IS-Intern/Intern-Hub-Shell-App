@@ -1,0 +1,81 @@
+<div class="face-dialog-overlay" (click)="close()">
+  <div class="face-dialog" (click)="$event.stopPropagation()">
+    @if (submitStatus() === 'success') {
+      <div class="face-dialog-success">
+        <div class="success-icon">&#10004;</div>
+        <h2 class="success-title">Đăng ký thành công!</h2>
+        <p class="success-desc">Khuôn mặt của bạn đã được đăng ký vào hệ thống.</p>
+        <button class="btn-primary" (click)="close()">Đóng</button>
+      </div>
+    } @else {
+      <div class="face-dialog-header">
+        <h2>Đăng ký khuôn mặt</h2>
+        <div class="badge">Bước {{ step() + 1 }} / {{ totalSteps }}</div>
+        <button class="close-btn" (click)="close()" [disabled]="isSubmitting()">✕</button>
+      </div>
+
+      <div class="face-dialog-body">
+        <div class="camera-section">
+          <div class="camera-ring">
+            <div class="camera-orb">
+              <video #videoElement autoplay playsinline></video>
+              <canvas #canvasElement></canvas>
+              <div class="status-overlay" [class.detected]="isStepComplete()"></div>
+
+              @if (autoCountdown() > 0 && !isSubmitting()) {
+                <svg class="countdown-ring" viewBox="0 0 100 100">
+                  <circle class="countdown-ring-bg" cx="50" cy="50" r="46" />
+                  <circle
+                    class="countdown-ring-fill"
+                    cx="50" cy="50" r="46"
+                    [style.stroke-dashoffset]="289 - (289 * autoCountdown()) / 100"
+                  />
+                </svg>
+              }
+
+              @if (isSubmitting()) {
+                <div class="loading-overlay">
+                  <div class="spinner"></div>
+                  <span>Đang đăng ký...</span>
+                </div>
+              }
+            </div>
+            <div class="ring-decoration"></div>
+          </div>
+
+          <div class="instruction-text">
+            {{ isSubmitting() ? 'Đang gửi dữ liệu lên server...' : currentStepText() }}
+          </div>
+        </div>
+
+        <div class="progress-steps">
+          @for (config of stepConfigs; track $index) {
+            <div
+              class="step-dot"
+              [class.active]="step() >= $index"
+              [class.current]="step() === $index"
+              [class.front]="config.direction === 'front'"
+              [class.right]="config.direction === 'right'"
+              [class.left]="config.direction === 'left'"
+            ></div>
+          }
+        </div>
+
+        @if (submitStatus() === 'error') {
+          <div class="error-message">{{ errorMessage() }}</div>
+        }
+
+        <div class="controls">
+          <button
+            class="btn-primary"
+            [disabled]="!isStepComplete() || isSubmitting()"
+            (click)="nextStep()"
+          >
+            {{ isSubmitting() ? 'Đang xử lý...' : (isStepComplete() ? (step() === totalSteps - 1 ? 'Hoàn tất đăng ký' : 'Tiếp tục') : 'Đang quét khuôn mặt...') }}
+          </button>
+          <button class="btn-cancel" (click)="close()" [disabled]="isSubmitting()">Huỷ bỏ</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
