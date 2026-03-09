@@ -103,7 +103,7 @@ export class ShellLayoutComponent implements OnInit {
           method: () => this.handleSettings(),
         },
         {
-          icon: 'dsi-logout-01-line',
+          icon: 'dsi dsi-log-out-01-line',
           content: 'Đăng xuất',
           method: () => this.handleLogout(),
         },
