@@ -8,6 +8,7 @@
             class="sidebar-item"
             [class.active]="activeItem === item || rla.isActive"
             routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
             #rla="routerLinkActive"
             [isActive]="activeItem === item || rla.isActive"
             [isSidebarExpanded]="isSidebarExpanded"
@@ -44,6 +45,7 @@
                 <app-functional-label
                   class="sidebar-item sub-item"
                   routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
                   #subRla="routerLinkActive"
                   [isActive]="activeItem === child || subRla.isActive"
                   [isSidebarExpanded]="isSidebarExpanded"

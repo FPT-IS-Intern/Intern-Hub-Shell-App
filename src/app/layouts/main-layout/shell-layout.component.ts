@@ -193,7 +193,7 @@ export class ShellLayoutComponent implements OnInit {
       }, 
       {
         iconLeft: "dsi dsi-ticket-02-line", 
-        content: 'Quản lý vé',
+        content: 'Quản lý phiếu yêu cầu',
         url: '/hrm/manage-tickets',
       }
     ],
