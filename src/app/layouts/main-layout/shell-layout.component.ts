@@ -186,6 +186,16 @@ export class ShellLayoutComponent implements OnInit {
         content: 'Tin tức',
         url: '/news',
       },
+      {
+        iconLeft: "dsi dsi-user-03-line", 
+        content: 'Quản lý nhân sự',
+        url: '/hrm',
+      }, 
+      {
+        iconLeft: "dsi dsi-ticket-02-line", 
+        content: 'Quản lý vé',
+        url: '/hrm/management-tickets',
+      }
     ],
   };
 
