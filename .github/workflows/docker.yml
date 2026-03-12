@@ -5,6 +5,13 @@ on:
     branches:
       - master
       - main
+    paths:
+      - 'src/**'
+      - 'package*.json'
+      - 'angular.json'
+      - 'federation.config.js'
+      - 'Dockerfile'
+      - '.github/workflows/docker.yml'
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
