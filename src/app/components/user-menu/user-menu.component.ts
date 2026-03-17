@@ -16,12 +16,13 @@ export interface UserMenuAction {
 export interface UserMenuData {
   userName: string;
   userEmail?: string;
-  userRole?: string;
+  positionName?: string;
   userIcon?: IconData | string;
   userIconColor?: string;
   dropdownIcon?: IconData | string;
   dropdownIconColor?: string;
   userMenuItems?: UserMenuAction[];
+  avatarUrl?: string;
 }
 
 @Component({

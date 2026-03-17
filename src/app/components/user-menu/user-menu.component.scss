@@ -25,6 +25,13 @@
     }
   }
 
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+
   .user-avatar-placeholder {
     width: 32px;
     height: 32px;

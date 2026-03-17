@@ -1,12 +1,16 @@
 <div class="user-menu-container">
   <button class="user-btn" (click)="toggleUserMenu($event)">
-    <div class="user-avatar-placeholder">
-      @if (data.userIcon) {
-        <app-icon [iconData]="getIconData(data.userIcon, 'white', '16px', '16px')"></app-icon>
-      } @else {
-        <span>{{ data.userName.charAt(0) }}</span>
-      }
-    </div>
+    @if (data.avatarUrl) {
+      <img [src]="data.avatarUrl" class="user-avatar" alt="avatar" />
+    } @else {
+      <div class="user-avatar-placeholder">
+        @if (data.userIcon) {
+          <app-icon [iconData]="getIconData(data.userIcon, 'white', '16px', '16px')"></app-icon>
+        } @else {
+          <span>{{ data.userName.charAt(0) }}</span>
+        }
+      </div>
+    }
 
     <span class="user-name">{{ data.userName }}</span>
 
@@ -27,8 +31,8 @@
           @if (data.userEmail) {
             <span class="info-email">{{ data.userEmail }}</span>
           }
-          @if (data.userRole) {
-            <span class="info-role">{{ data.userRole }}</span>
+          @if (data.positionName) {
+            <span class="info-role">{{ data.positionName }}</span>
           }
         </div>
       </div>
