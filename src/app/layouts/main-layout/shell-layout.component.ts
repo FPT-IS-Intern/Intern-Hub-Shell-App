@@ -81,7 +81,7 @@ export class ShellLayoutComponent implements OnInit {
     userMenuData: {
       userName: 'Nguyễn Văn An',
       userEmail: 'an.nv@fpt.com',
-      userRole: 'Fullstack Developer',
+      positionName: 'Fullstack Developer',
       userIcon: 'dsi-user-01-line',
       userIconColor: 'var(--brand-500)',
       dropdownIcon: 'dsi-arrow-down-solid',
@@ -255,7 +255,8 @@ export class ShellLayoutComponent implements OnInit {
             ...this.headerData.userMenuData,
             userName: response.data.fullName || this.headerData.userMenuData.userName,
             userEmail: response.data.email || this.headerData.userMenuData.userEmail,
-            userRole: response.data.role || this.headerData.userMenuData.userRole,
+            positionName: response.data.positionName || this.headerData.userMenuData.positionName,
+            avatarUrl: response.data.avatarUrl || this.headerData.userMenuData.avatarUrl,
             userMenuItems: updatedUserMenuItems,
           },
         };

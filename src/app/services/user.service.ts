@@ -8,7 +8,8 @@ export interface CurrentUser {
   fullName: string;
   avatarUrl?: string;
   email: string;
-  role: string;
+  role?: string;
+  positionName?: string;
   isFaceRegistry?: boolean;
 }
 
