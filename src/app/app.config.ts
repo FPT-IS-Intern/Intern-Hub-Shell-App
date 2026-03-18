@@ -25,6 +25,7 @@ registerLocaleData(localeVi);
 configureAuthInterceptor({
   excludedPaths: [
     // AUTH
+    '/auth/public-key',
     '/auth/login',
     '/auth/password-reset',
     '/auth/refresh',

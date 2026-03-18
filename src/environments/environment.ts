@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8765/api',
+  apiUrl: 'https://internhub-v2.bbtech.io.vn/api',
   storageFileBaseUrl: 'https://s3.vn-hcm-1.vietnix.cloud/bravos/',
   firebase: {
     apiKey: 'AIzaSyBJI3pgbxmH-wXF6Qx5FVDxeJcUak_fjqs',
