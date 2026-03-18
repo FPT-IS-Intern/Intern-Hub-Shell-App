@@ -1,18 +1,19 @@
-﻿/* Firebase messaging service worker. */
+/* Firebase messaging service worker. */
+importScripts('/env.js');
 importScripts('https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/11.10.0/firebase-messaging-compat.js');
 
-firebase.initializeApp({
-  apiKey: 'AIzaSyBJI3pgbxmH-wXF6Qx5FVDxeJcUak_fjqs',
-  authDomain: 'internhub-v2.firebaseapp.com',
-  projectId: 'internhub-v2',
-  storageBucket: 'internhub-v2.firebasestorage.app',
-  messagingSenderId: '1009479495930',
-  appId: '1:1009479495930:web:9aafb7f4c21ac87f6f1943',
-  measurementId: 'G-6PF6H5DCGJ',
-});
+const firebaseConfig = self.__env?.firebase ?? {};
 
-const messaging = firebase.messaging();
+function hasFirebaseConfig(config) {
+  return Boolean(config?.apiKey && config?.projectId && config?.messagingSenderId && config?.appId);
+}
+
+if (hasFirebaseConfig(firebaseConfig)) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+const messaging = hasFirebaseConfig(firebaseConfig) ? firebase.messaging() : null;
 const APP_NAME = 'Intern Hub';
 const DEFAULT_ICON = '/favicon.ico';
 
@@ -22,7 +23,7 @@ function toText(value) {
 
 function truncate(value, maxLength) {
   if (!value) return '';
-  return value.length > maxLength ? `${value.slice(0, maxLength - 1)}…` : value;
+  return value.length > maxLength ? `${value.slice(0, maxLength - 1)}...` : value;
 }
 
 function buildNotificationContent(payload) {
@@ -72,36 +73,38 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(self.clients.claim());
 });
 
-messaging.onBackgroundMessage((payload) => {
-  const content = buildNotificationContent(payload);
-  if (content.silent) {
-    return;
-  }
+if (messaging) {
+  messaging.onBackgroundMessage((payload) => {
+    const content = buildNotificationContent(payload);
+    if (content.silent) {
+      return;
+    }
 
-  return clients
-    .matchAll({ type: 'window', includeUncontrolled: true })
-    .then((windowClients) => {
-      const visibleClient = windowClients.find((client) => client.visibilityState === 'visible');
-      if (visibleClient) {
-        visibleClient.postMessage({
-          type: 'IN_APP_PUSH_NOTIFICATION',
-          payload: {
-            title: content.title,
-            body: content.body,
-            image: content.image,
-            targetUrl: content.targetUrl,
-            silent: content.silent,
-            tag: content.tag,
-            badgeCount: content.badgeCount,
-            nativeNotification: content.nativeNotification,
-          },
-        });
-        return;
-      }
+    return clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then((windowClients) => {
+        const visibleClient = windowClients.find((client) => client.visibilityState === 'visible');
+        if (visibleClient) {
+          visibleClient.postMessage({
+            type: 'IN_APP_PUSH_NOTIFICATION',
+            payload: {
+              title: content.title,
+              body: content.body,
+              image: content.image,
+              targetUrl: content.targetUrl,
+              silent: content.silent,
+              tag: content.tag,
+              badgeCount: content.badgeCount,
+              nativeNotification: content.nativeNotification,
+            },
+          });
+          return;
+        }
 
-      return self.registration.showNotification(content.title, content.options);
-    });
-});
+        return self.registration.showNotification(content.title, content.options);
+      });
+  });
+}
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();

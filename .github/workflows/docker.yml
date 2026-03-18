@@ -7,10 +7,13 @@ on:
       - main
     paths:
       - 'src/**'
+      - 'public/**'
       - 'package*.json'
       - 'angular.json'
       - 'federation.config.js'
       - 'Dockerfile'
+      - 'nginx.conf'
+      - 'docker-entrypoint.d/**'
       - '.github/workflows/docker.yml'
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

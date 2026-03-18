@@ -1,13 +1,18 @@
 import { initFederation } from '@angular-architects/native-federation';
 import { environment } from './environments/environment';
 
-// Trigger deploy
-// Khởi tạo cấu hình Runtime Cấp Toàn Cục (Global Runtime Config)
+const runtimeEnv = (globalThis as any).__env ?? {};
+const runtimeFirebase = runtimeEnv.firebase ?? {};
+
 const appEnv = {
-  apiUrl: environment.apiUrl,
-  storageFileBaseUrl: (environment as any).storageFileBaseUrl,
-  firebase: (environment as any).firebase,
-  firebaseVapidKey: (environment as any).firebaseVapidKey,
+  ...runtimeEnv,
+  apiUrl: runtimeEnv.apiUrl ?? environment.apiUrl,
+  storageFileBaseUrl: runtimeEnv.storageFileBaseUrl ?? (environment as any).storageFileBaseUrl,
+  firebase: {
+    ...(environment as any).firebase,
+    ...runtimeFirebase,
+  },
+  firebaseVapidKey: runtimeEnv.firebaseVapidKey ?? (environment as any).firebaseVapidKey,
 };
 
 (globalThis as any).__env = appEnv;
@@ -18,9 +23,9 @@ const manifestFile = environment.production
 
 initFederation(manifestFile)
   .then(() => {
-    console.log(`Nạp federation manifest (${manifestFile}) thành công`);
+    console.log(`Nap federation manifest (${manifestFile}) thanh cong`);
     return import('./bootstrap');
   })
   .catch((err) => {
-    console.error('Lỗi khi khởi tạo Native Federation:', err);
+    console.error('Loi khi khoi tao Native Federation:', err);
   });
