@@ -200,8 +200,8 @@ export class ShellLayoutComponent implements OnInit, OnDestroy {
         url: '/hrm/manage-tickets',
       },
       {
-        iconLeft: 'dsi dsi-wallet-01-line',
-        content: 'Ví điện tử',
+        iconLeft: SIDEBAR_ICONS.WALLET,
+        content: 'Ví người dùng',
         url: '/wallet',
       }
     ],

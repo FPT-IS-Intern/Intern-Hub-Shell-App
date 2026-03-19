@@ -51,4 +51,9 @@ export const SIDEBAR_ICONS = {
     width: '16px',
     height: '16px',
   },
+  WALLET: {
+    icon: 'custom-icon-wallet',
+    width: '16px',
+    height: '16px',
+  },
 } satisfies Record<string, IconData>;
