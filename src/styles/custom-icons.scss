@@ -60,3 +60,7 @@
 .custom-icon-arrow-right {
   @include custom-icon-file('../assets/icons/arrow-right.svg', 1rem);
 }
+
+.custom-icon-wallet {
+  @include custom-icon-file('../assets/icons/wallet.svg');
+}
