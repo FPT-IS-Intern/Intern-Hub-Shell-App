@@ -12,7 +12,7 @@ import { UserService } from '../../services/user.service';
 import { SIDEBAR_ICONS } from '../../core/sidebar-icons';
 import { NotificationService } from '../../services/notification.service';
 import { InAppNotificationResponse } from '../../models/notification.model';
-import { catchError, forkJoin, of } from 'rxjs';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-shell-layout',
@@ -283,6 +283,7 @@ export class ShellLayoutComponent implements OnInit, OnDestroy {
     if (!notification.read) {
       this.notificationService.markOneAsRead(notification.id).subscribe({
         next: () => {
+          this.refreshUnreadCount();
           this.loadNotifications(this.notificationFilter);
         },
         error: (err: HttpErrorResponse) => {
@@ -297,6 +298,7 @@ export class ShellLayoutComponent implements OnInit, OnDestroy {
   handleNotificationViewAll(): void {
     this.notificationService.markAllAsRead().subscribe({
       next: () => {
+        this.refreshUnreadCount();
         this.loadNotifications(this.notificationFilter);
       },
       error: (err: HttpErrorResponse) => {
@@ -395,19 +397,16 @@ export class ShellLayoutComponent implements OnInit, OnDestroy {
     this.notificationLoading = true;
     this.applyNotificationsToHeader();
 
-    forkJoin({
-      unreadCount: this.notificationService.getUnreadCount().pipe(catchError(() => of({ data: 0 }))),
-      notifications: this.notificationService
-        .getMyNotifications(this.notificationPage, this.notificationPageSize, isRead)
-        .pipe(catchError(() => of({ data: [] as InAppNotificationResponse[] }))),
-    }).subscribe(({ unreadCount, notifications }) => {
+    this.notificationService
+      .getMyNotifications(this.notificationPage, this.notificationPageSize, isRead)
+      .pipe(catchError(() => of({ data: [] as InAppNotificationResponse[] })))
+      .subscribe((notifications) => {
       const pageItems = notifications.data ?? [];
-      this.currentUnreadCount = unreadCount.data ?? 0;
       this.currentNotificationItems = pageItems;
       this.notificationHasMore = pageItems.length >= this.notificationPageSize;
-      this.applyNotificationsToHeader();
       this.notificationLoading = false;
-    });
+      this.applyNotificationsToHeader();
+      });
   }
 
   private loadMoreNotifications(): void {
@@ -427,14 +426,15 @@ export class ShellLayoutComponent implements OnInit, OnDestroy {
         if (pageItems.length === 0) {
           this.notificationHasMore = false;
           this.notificationLoading = false;
+          this.applyNotificationsToHeader();
           return;
         }
 
         this.notificationPage = nextPage;
         this.notificationHasMore = pageItems.length >= this.notificationPageSize;
         this.currentNotificationItems = [...this.currentNotificationItems, ...pageItems];
-        this.applyNotificationsToHeader();
         this.notificationLoading = false;
+        this.applyNotificationsToHeader();
       });
   }
 
