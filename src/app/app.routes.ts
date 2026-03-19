@@ -46,6 +46,14 @@ export const routes: Routes = [
         loadChildren: safeLoadRemoteRoutes('hrm'),
       },
       {
+        path: 'pm',
+        loadChildren: safeLoadRemoteRoutes('pm'),
+      },
+      {
+        path: 'wallet',
+        loadChildren: safeLoadRemoteRoutes('wallet'),
+      },
+      {
         path: 'error',
         children: errorRoutes,
       },
