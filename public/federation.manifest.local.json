@@ -5,5 +5,7 @@
   "lms": "http://localhost:4204/remoteEntry.json",
   "hrm": "http://localhost:4205/remoteEntry.json",
   "boPortal": "http://localhost:4206/remoteEntry.json",
-  "homePage": "http://localhost:4207/remoteEntry.json"
+  "homePage": "http://localhost:4207/remoteEntry.json",
+  "pm": "http://localhost:4208/remoteEntry.json",
+  "wallet": "http://localhost:4209/remoteEntry.json"
 }
