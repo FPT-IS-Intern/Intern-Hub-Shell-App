@@ -54,7 +54,12 @@
               </div>
             }
 
-            @if (getDisplayedDropdownItems(item).length === 0) {
+            @if (getDisplayedDropdownItems(item).length === 0 && item.notificationLoading && item.dropdownType === 'notification') {
+              <div class="header-dropdown-loading">
+                <span class="header-dropdown-loading-spinner"></span>
+                <span class="header-dropdown-loading-text">Đang tải thông báo...</span>
+              </div>
+            } @else if (getDisplayedDropdownItems(item).length === 0) {
               <div class="header-dropdown-empty">
                 <div class="header-dropdown-empty-icon"></div>
                 <div class="header-dropdown-empty-title">Chưa có thông báo</div>
@@ -90,6 +95,13 @@
                           </div>
                         </button>
                       }
+                    }
+
+                    @if (item.notificationLoading) {
+                      <div class="header-dropdown-load-more">
+                        <span class="header-dropdown-loading-spinner small"></span>
+                        <span class="header-dropdown-loading-text">Đang tải thêm...</span>
+                      </div>
                     }
                   </div>
                   @if (notificationScrollbarVisible) {

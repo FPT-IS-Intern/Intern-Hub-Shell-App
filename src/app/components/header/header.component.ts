@@ -25,6 +25,8 @@ export interface HeaderAction {
   viewAllMethod?: () => void;
   notificationFilterChanged?: (filter: 'all' | 'unread') => void;
   notificationLoadMore?: () => void;
+  notificationDropdownToggled?: (isOpen: boolean) => void;
+  notificationLoading?: boolean;
   dropdownItems?: HeaderDropdownItem[];
 }
 
@@ -65,7 +67,15 @@ export class HeaderComponent {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
     if (!this.elementRef.nativeElement.contains(event.target)) {
+      const openIndex = this.openDropdownIndex;
       this.openDropdownIndex = null;
+
+      if (openIndex !== null) {
+        const openItem = this.data.headerItems[openIndex];
+        if (openItem?.dropdownType === 'notification') {
+          openItem.notificationDropdownToggled?.(false);
+        }
+      }
     }
   }
 
@@ -78,8 +88,14 @@ export class HeaderComponent {
     if (item.dropdownItems) {
       event.preventDefault();
       event.stopPropagation();
-      this.openDropdownIndex = this.openDropdownIndex === index ? null : index;
-      this.notificationFilter = 'all';
+      const isOpen = this.openDropdownIndex !== index;
+      this.openDropdownIndex = isOpen ? index : null;
+
+      if (item.dropdownType === 'notification') {
+        this.notificationFilter = 'all';
+        item.notificationDropdownToggled?.(isOpen);
+      }
+
       this.scheduleNotificationScrollbarUpdate();
       return;
     }
