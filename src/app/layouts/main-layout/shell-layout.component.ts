@@ -182,7 +182,7 @@ export class ShellLayoutComponent implements OnInit, OnDestroy {
       {
         iconLeft: SIDEBAR_ICONS.PROJECTS,
         content: 'Dự án',
-        url: '/projects',
+        url: '/pm',
       },
       {
         iconLeft: SIDEBAR_ICONS.NEWS,
@@ -190,14 +190,19 @@ export class ShellLayoutComponent implements OnInit, OnDestroy {
         url: '/news',
       },
       {
-        iconLeft: "dsi dsi-user-03-line", 
+        iconLeft: 'dsi dsi-user-03-line',
         content: 'Quản lý nhân sự',
         url: '/hrm',
-      }, 
+      },
       {
-        iconLeft: "dsi dsi-ticket-02-line", 
+        iconLeft: 'dsi dsi-ticket-02-line',
         content: 'Quản lý phiếu yêu cầu',
         url: '/hrm/manage-tickets',
+      },
+      {
+        iconLeft: 'dsi dsi-wallet-01-line',
+        content: 'Ví điện tử',
+        url: '/wallet',
       }
     ],
   };
