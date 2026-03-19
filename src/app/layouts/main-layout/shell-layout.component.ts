@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterOutlet, Router } from '@angular/router';
@@ -21,16 +21,18 @@ import { catchError, forkJoin, of } from 'rxjs';
   templateUrl: './shell-layout.component.html',
   styleUrls: ['./shell-layout.component.scss'],
 })
-export class ShellLayoutComponent implements OnInit {
+export class ShellLayoutComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
   private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
+  private readonly onInAppPushNotification = this.handleInAppPushNotification.bind(this);
   private notificationFilter: 'all' | 'unread' = 'all';
   private notificationPage = 0;
   private readonly notificationPageSize = 10;
   private notificationHasMore = true;
   private notificationLoading = false;
+  private isNotificationDropdownOpen = false;
   private currentNotificationItems: InAppNotificationResponse[] = [];
   private currentUnreadCount = 0;
 
@@ -66,6 +68,7 @@ export class ShellLayoutComponent implements OnInit {
         viewAllMethod: () => this.handleNotificationViewAll(),
         notificationFilterChanged: (filter) => this.handleNotificationFilterChange(filter),
         notificationLoadMore: () => this.loadMoreNotifications(),
+        notificationDropdownToggled: (isOpen) => this.handleNotificationDropdownToggled(isOpen),
         badge: '0',
         dropdownItems: [],
       },
@@ -220,7 +223,12 @@ export class ShellLayoutComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCurrentUser();
-    this.loadNotifications('all');
+    this.refreshUnreadCount();
+    window.addEventListener('IN_APP_PUSH_NOTIFICATION', this.onInAppPushNotification as EventListener);
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('IN_APP_PUSH_NOTIFICATION', this.onInAppPushNotification as EventListener);
   }
 
   private loadCurrentUser(): void {
@@ -385,6 +393,7 @@ export class ShellLayoutComponent implements OnInit {
     this.currentNotificationItems = [];
     const isRead = filter === 'all' ? undefined : false;
     this.notificationLoading = true;
+    this.applyNotificationsToHeader();
 
     forkJoin({
       unreadCount: this.notificationService.getUnreadCount().pipe(catchError(() => of({ data: 0 }))),
@@ -407,6 +416,7 @@ export class ShellLayoutComponent implements OnInit {
     }
 
     this.notificationLoading = true;
+    this.applyNotificationsToHeader();
     const nextPage = this.notificationPage + 1;
     const isRead = this.notificationFilter === 'all' ? undefined : false;
     this.notificationService
@@ -428,6 +438,35 @@ export class ShellLayoutComponent implements OnInit {
       });
   }
 
+  private handleInAppPushNotification(): void {
+    this.refreshUnreadCount();
+
+    if (this.isNotificationDropdownOpen) {
+      this.loadNotifications(this.notificationFilter);
+    }
+  }
+
+  private handleNotificationDropdownToggled(isOpen: boolean): void {
+    this.isNotificationDropdownOpen = isOpen;
+
+    if (!isOpen) {
+      return;
+    }
+
+    this.notificationFilter = 'all';
+    this.loadNotifications('all');
+  }
+
+  private refreshUnreadCount(): void {
+    this.notificationService
+      .getUnreadCount()
+      .pipe(catchError(() => of({ data: this.currentUnreadCount })))
+      .subscribe((response) => {
+        this.currentUnreadCount = response.data ?? 0;
+        this.applyNotificationsToHeader();
+      });
+  }
+
   private applyNotificationsToHeader(): void {
     const bellItemIndex = this.headerData.headerItems.findIndex((item) => item.icon === 'custom-icon-bell');
     if (bellItemIndex < 0) {
@@ -436,7 +475,7 @@ export class ShellLayoutComponent implements OnInit {
 
     const list = [...this.currentNotificationItems].sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
     const mappedItems = list.map((item) => ({
-      title: item.title,
+      title: item.content || item.title,
       description: item.content,
       time: this.formatNotificationTime(item.createdAt),
       unread: !item.read,
@@ -448,6 +487,7 @@ export class ShellLayoutComponent implements OnInit {
     nextHeaderItems[bellItemIndex] = {
       ...nextHeaderItems[bellItemIndex],
       badge: String(this.currentUnreadCount),
+      notificationLoading: this.notificationLoading,
       dropdownItems: mappedItems,
     };
 
