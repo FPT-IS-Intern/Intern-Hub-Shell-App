@@ -54,6 +54,10 @@ export const routes: Routes = [
         loadChildren: safeLoadRemoteRoutes('wallet'),
       },
       {
+        path: 'ticket',
+        loadChildren: safeLoadRemoteRoutes('ticket'),
+      },
+      {
         path: 'error',
         children: errorRoutes,
       },
