@@ -10,4 +10,5 @@
   "wallet": "http://localhost:4220/remoteEntry.json",
   "ticket": "http://localhost:4221/remoteEntry.json",
   "news": "http://localhost:4210/remoteEntry.json"
+  
 }
