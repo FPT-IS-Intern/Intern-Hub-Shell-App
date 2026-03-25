@@ -7,5 +7,6 @@
   "homePage": "https://internhub-v2.bbtech.io.vn/mfe/homePage/remoteEntry.json",
   "pm": "https://internhub-v2.bbtech.io.vn/mfe/pm/remoteEntry.json",
   "wallet": "https://internhub-v2.bbtech.io.vn/mfe/wallet/remoteEntry.json",
-  "ticket": "https://internhub-v2.bbtech.io.vn/mfe/ticket/remoteEntry.json"
+  "ticket": "https://internhub-v2.bbtech.io.vn/mfe/ticket/remoteEntry.json",
+  "news": "https://internhub-v2.bbtech.io.vn/mfe/news/remoteEntry.json"
 }
