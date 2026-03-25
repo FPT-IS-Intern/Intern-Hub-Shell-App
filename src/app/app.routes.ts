@@ -62,6 +62,10 @@ export const routes: Routes = [
         children: errorRoutes,
       },
       {
+        path: 'news',
+        loadChildren: safeLoadRemoteRoutes('news'),
+      },
+      {
         path: '**',
         component: Error404LayoutComponent,
       },

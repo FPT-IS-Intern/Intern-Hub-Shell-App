@@ -17,7 +17,13 @@ import { catchError, of } from 'rxjs';
 @Component({
   selector: 'app-shell-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent, FaceRegistrationDialogComponent],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    HeaderComponent,
+    SidebarComponent,
+    FaceRegistrationDialogComponent,
+  ],
   templateUrl: './shell-layout.component.html',
   styleUrls: ['./shell-layout.component.scss'],
 })
@@ -187,7 +193,7 @@ export class ShellLayoutComponent implements OnInit, OnDestroy {
       {
         iconLeft: SIDEBAR_ICONS.NEWS,
         content: 'Tin tức',
-        url: '/news',
+        url: '/news/management/dashboard',
       },
       {
         iconLeft: 'dsi dsi-user-03-line',
@@ -203,7 +209,7 @@ export class ShellLayoutComponent implements OnInit, OnDestroy {
         iconLeft: SIDEBAR_ICONS.WALLET,
         content: 'Ví người dùng',
         url: '/wallet',
-      }
+      },
     ],
   };
 
@@ -229,11 +235,17 @@ export class ShellLayoutComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadCurrentUser();
     this.refreshUnreadCount();
-    window.addEventListener('IN_APP_PUSH_NOTIFICATION', this.onInAppPushNotification as EventListener);
+    window.addEventListener(
+      'IN_APP_PUSH_NOTIFICATION',
+      this.onInAppPushNotification as EventListener,
+    );
   }
 
   ngOnDestroy(): void {
-    window.removeEventListener('IN_APP_PUSH_NOTIFICATION', this.onInAppPushNotification as EventListener);
+    window.removeEventListener(
+      'IN_APP_PUSH_NOTIFICATION',
+      this.onInAppPushNotification as EventListener,
+    );
   }
 
   private loadCurrentUser(): void {
@@ -246,14 +258,18 @@ export class ShellLayoutComponent implements OnInit, OnDestroy {
         // Lấy phần trước @ trong email, lowercase
         const email = response.data.email || '';
         const atIndex = email.indexOf('@');
-        this.faceRegistrationUserName = (atIndex > 0 ? email.substring(0, atIndex) : email).toLowerCase();
+        this.faceRegistrationUserName = (
+          atIndex > 0 ? email.substring(0, atIndex) : email
+        ).toLowerCase();
 
         // Cập nhật trạng thái đăng ký khuôn mặt
         this.isFaceRegistered = response.data.isFaceRegistry === true;
 
         // Cập nhật menu item đăng ký khuôn mặt
         const updatedUserMenuItems = [...this.headerData.userMenuData.userMenuItems!];
-        const faceMenuIndex = updatedUserMenuItems.findIndex((item) => item.content === 'Đăng ký khuôn mặt');
+        const faceMenuIndex = updatedUserMenuItems.findIndex(
+          (item) => item.content === 'Đăng ký khuôn mặt',
+        );
         if (faceMenuIndex >= 0) {
           updatedUserMenuItems[faceMenuIndex] = {
             ...updatedUserMenuItems[faceMenuIndex],
@@ -332,7 +348,9 @@ export class ShellLayoutComponent implements OnInit, OnDestroy {
 
     // Cập nhật menu item
     const updatedUserMenuItems = [...this.headerData.userMenuData.userMenuItems!];
-    const faceMenuIndex = updatedUserMenuItems.findIndex((item) => item.content === 'Đăng ký khuôn mặt');
+    const faceMenuIndex = updatedUserMenuItems.findIndex(
+      (item) => item.content === 'Đăng ký khuôn mặt',
+    );
     if (faceMenuIndex >= 0) {
       updatedUserMenuItems[faceMenuIndex] = {
         ...updatedUserMenuItems[faceMenuIndex],
@@ -406,11 +424,11 @@ export class ShellLayoutComponent implements OnInit, OnDestroy {
       .getMyNotifications(this.notificationPage, this.notificationPageSize, isRead)
       .pipe(catchError(() => of({ data: [] as InAppNotificationResponse[] })))
       .subscribe((notifications) => {
-      const pageItems = notifications.data ?? [];
-      this.currentNotificationItems = pageItems;
-      this.notificationHasMore = pageItems.length >= this.notificationPageSize;
-      this.notificationLoading = false;
-      this.applyNotificationsToHeader();
+        const pageItems = notifications.data ?? [];
+        this.currentNotificationItems = pageItems;
+        this.notificationHasMore = pageItems.length >= this.notificationPageSize;
+        this.notificationLoading = false;
+        this.applyNotificationsToHeader();
       });
   }
 
@@ -473,12 +491,16 @@ export class ShellLayoutComponent implements OnInit, OnDestroy {
   }
 
   private applyNotificationsToHeader(): void {
-    const bellItemIndex = this.headerData.headerItems.findIndex((item) => item.icon === 'custom-icon-bell');
+    const bellItemIndex = this.headerData.headerItems.findIndex(
+      (item) => item.icon === 'custom-icon-bell',
+    );
     if (bellItemIndex < 0) {
       return;
     }
 
-    const list = [...this.currentNotificationItems].sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
+    const list = [...this.currentNotificationItems].sort(
+      (a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0),
+    );
     const mappedItems = list.map((item) => ({
       title: item.content || item.title,
       description: item.content,
